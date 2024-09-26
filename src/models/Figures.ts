@@ -1,19 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
-import { Cell, Figure } from ".";
+import { BaseFigure, Cell, xAxis, yAxis } from ".";
+import { diagonalDirections, lineAndDiagonalDirections, lineDirections } from "../constants";
+import { isKingSafeAtPosition } from "../logic";
 import { convertFromBoardIndex, convertToBoardIndex } from "../utils";
 
-type xAxis = 'a'|'b'|'c'|'d'|'e'|'f'|'g'|'h'
-type yAxis = '1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'
-
-export class Pawn implements Figure {
-  name = "pawn";
-  x: xAxis;
-  y: yAxis;
-  color:  "black"|"white";
+export class Pawn extends BaseFigure {
   constructor (x: xAxis, y: yAxis, color:  "black"|"white") {
-    this.x = x;
-    this.y = y;
-    this.color = color;
+    super("pawn", x, y, color)
   }
   
   getPossibleMoves(gameMode:"white"|"black") {
@@ -45,23 +38,11 @@ export class Pawn implements Figure {
     possibleMoves.add(convertToBoardIndex(x-1, y+1, gameMode));
     return possibleMoves;
   }
-
-  
-  changePosition(x: xAxis, y: yAxis) {
-    this.x = x;
-    this.y = y;
-  }
 }
 
-export class Knight implements Figure {
-  name = "knight";
-  x: xAxis;
-  y: yAxis;
-  color:  "black"|"white";
+export class Knight extends BaseFigure {
   constructor (x: xAxis, y: yAxis, color:  "black"|"white") {
-    this.x = x;
-    this.y = y;
-    this.color = color;
+    super("knight", x, y, color)
   }
 
   getPossibleMoves(gameMode:"white"|"black", board?: Cell[]) {
@@ -108,37 +89,18 @@ export class Knight implements Figure {
     })
     return possibleAttackMoves;
   }
-
-  changePosition(x: xAxis, y: yAxis) {
-    this.x = x;
-    this.y = y;
-  }
 }
 
-export class Bishop implements Figure {
-  name = "bishop";
-  x: xAxis;
-  y: yAxis;
-  color:  "black"|"white";
-
+export class Bishop extends BaseFigure {
   constructor (x: xAxis, y: yAxis, color:  "black"|"white") {
-    this.x = x;
-    this.y = y;
-    this.color = color;
+    super("bishop", x, y, color)
   }
 
   getPossibleMoves(gameMode:"white"|"black", board?: Cell[]) {
     const { x, y } = convertFromBoardIndex(this.x, this.y, gameMode);
     const possibleMoves = new Set<string>();
 
-    const directions = [
-      { dx: 1, dy: 1 },
-      { dx: -1, dy: 1 },
-      { dx: -1, dy: -1 },
-      { dx: 1, dy: -1 }
-    ];
-
-    directions.map(d => {
+    diagonalDirections.map(d => {
       let i = 1;
       while (convertToBoardIndex(x+d.dx*i, y+d.dy*i, gameMode) && board && !board.find(cell=>cell.position == convertToBoardIndex(x+d.dx*i, y+d.dy*i, gameMode))?.figure ) {
         const diagonalMove = convertToBoardIndex(x+d.dx*i, y+d.dy*i, gameMode);
@@ -153,14 +115,7 @@ export class Bishop implements Figure {
     const {x, y} = convertFromBoardIndex(this.x, this.y, gameMode);
     const possibleAttackMoves = new Set<string>();
 
-    const directions = [
-      { dx: 1, dy: 1 },
-      { dx: -1, dy: 1 },
-      { dx: -1, dy: -1 },
-      { dx: 1, dy: -1 }
-    ];
-
-    directions.map(d => {
+    diagonalDirections.map(d => {
       let i = 1;
       while (convertToBoardIndex(x+d.dx*i, y+d.dy*i, gameMode)) {
         const diagonalMove = convertToBoardIndex(x+d.dx*i, y+d.dy*i, gameMode);
@@ -174,36 +129,18 @@ export class Bishop implements Figure {
     })
     return possibleAttackMoves;
   }
-
-  changePosition(x: xAxis, y: yAxis) {
-    this.x = x;
-    this.y = y;
-  }
 } 
 
-export class Rook implements Figure {
-  name = "rook";
-  x: xAxis;
-  y: yAxis;
-  color:  "black"|"white";
+export class Rook extends BaseFigure {
   constructor (x: xAxis, y: yAxis, color:  "black"|"white") {
-    this.x = x;
-    this.y = y;
-    this.color = color;
+    super("rook", x, y, color)
   }
 
   getPossibleMoves(gameMode:"white"|"black", board?: Cell[]) {
     const { x, y } = convertFromBoardIndex(this.x, this.y, gameMode);
     const possibleMoves = new Set<string>();
 
-    const directions = [
-      { dx: 0, dy: 1 },
-      { dx: 0, dy: -1 },
-      { dx: 1, dy: 0 },
-      { dx: -1, dy: 0 }
-    ];
-
-    directions.map(d => {
+    lineDirections.map(d => {
       let i = 1;
       while (convertToBoardIndex(x+d.dx*i, y+d.dy*i, gameMode) && board && !board.find(cell=>cell.position == convertToBoardIndex(x+d.dx*i, y+d.dy*i, gameMode))?.figure ) {
         const diagonalMove = convertToBoardIndex(x+d.dx*i, y+d.dy*i, gameMode);
@@ -218,14 +155,7 @@ export class Rook implements Figure {
     const { x, y } = convertFromBoardIndex(this.x, this.y, gameMode);
     const possibleAttackMoves = new Set<string>();
 
-    const directions = [
-      { dx: 0, dy: 1 },
-      { dx: 0, dy: -1 },
-      { dx: 1, dy: 0 },
-      { dx: -1, dy: 0 }
-    ];
-
-    directions.map(d => {
+    lineDirections.map(d => {
       let i = 1;
       while (convertToBoardIndex(x+d.dx*i, y+d.dy*i, gameMode)) {
         const lineMove = convertToBoardIndex(x+d.dx*i, y+d.dy*i, gameMode);
@@ -239,40 +169,18 @@ export class Rook implements Figure {
     })
     return possibleAttackMoves;
   }
-
-  changePosition(x: xAxis, y: yAxis) {
-    this.x = x;
-    this.y = y;
-  }
 }
 
-export class Queen implements Figure {
-  name = "queen";
-  x: xAxis;
-  y: yAxis;
-  color:  "black"|"white";
+export class Queen extends BaseFigure {
   constructor (x: xAxis, y: yAxis, color:  "black"|"white") {
-    this.x = x;
-    this.y = y;
-    this.color = color;
+    super("queen", x, y, color)
   }
 
   getPossibleMoves(gameMode:"white"|"black", board?: Cell[]) {
     const { x, y } = convertFromBoardIndex(this.x, this.y, gameMode);
     const possibleMoves = new Set<string>();
 
-    const directions = [
-      { dx: 0, dy: 1 },
-      { dx: 0, dy: -1 },
-      { dx: 1, dy: 0 },
-      { dx: -1, dy: 0 },
-      { dx: 1, dy: 1 },
-      { dx: -1, dy: 1 },
-      { dx: -1, dy: -1 },
-      { dx: 1, dy: -1 }
-    ];
-
-    directions.map(d => {
+    lineAndDiagonalDirections.map(d => {
       let i = 1;
       while (convertToBoardIndex(x+d.dx*i, y+d.dy*i, gameMode) && board && !board.find(cell=>cell.position == convertToBoardIndex(x+d.dx*i, y+d.dy*i, gameMode))?.figure ) {
         const move = convertToBoardIndex(x+d.dx*i, y+d.dy*i, gameMode);
@@ -287,19 +195,8 @@ export class Queen implements Figure {
   getAttackMoves(gameMode:"white"|"black", board?: Cell[]) {
     const {x, y} = convertFromBoardIndex(this.x, this.y, gameMode);
     const possibleAttackMoves = new Set<string>();
-    
-    const directions = [
-      { dx: 0, dy: 1 },
-      { dx: 0, dy: -1 },
-      { dx: 1, dy: 0 },
-      { dx: -1, dy: 0 },
-      { dx: 1, dy: 1 },
-      { dx: -1, dy: 1 },
-      { dx: -1, dy: -1 },
-      { dx: 1, dy: -1 }
-    ];
 
-    directions.map(d => {
+    lineAndDiagonalDirections.map(d => {
       let i = 1;
       while (convertToBoardIndex(x+d.dx*i, y+d.dy*i, gameMode)) {
         const move = convertToBoardIndex(x+d.dx*i, y+d.dy*i, gameMode);
@@ -314,12 +211,48 @@ export class Queen implements Figure {
 
     return possibleAttackMoves;
   }
-
-  changePosition(x: xAxis, y: yAxis) {
-    this.x = x;
-    this.y = y;
-  }
 }
 
+export class King extends BaseFigure {
+  constructor (x: xAxis, y: yAxis, color:  "black"|"white") {
+    super("king", x, y, color)
+  }
 
-//export class King implements Figure {}
+  getPossibleMoves(gameMode:"white"|"black", board?: Cell[]) {
+    const { x, y } = convertFromBoardIndex(this.x, this.y, gameMode);
+    const possibleMoves = new Set<string>();
+
+    lineAndDiagonalDirections.map(d => {
+      if (convertToBoardIndex(x+d.dx, y+d.dy, gameMode) && board && !board.find(cell => cell.position == convertToBoardIndex(x+d.dx, y+d.dy, gameMode))?.figure ) {
+        const move = convertToBoardIndex(x+d.dx, y+d.dy, gameMode);
+        if (move) {
+          if (isKingSafeAtPosition(gameMode, this.color, x+d.dx, y+d.dy, board)) {
+            console.log( move  );
+            possibleMoves.add(move);
+          }
+        }
+      }
+    })
+    return possibleMoves;
+  }
+
+  getAttackMoves(gameMode:"white"|"black", board?: Cell[]) {
+    const {x, y} = convertFromBoardIndex(this.x, this.y, gameMode);
+    const possibleAttackMoves = new Set<string>();
+
+    lineAndDiagonalDirections.map(d => {
+      if (convertToBoardIndex(x+d.dx, y+d.dy, gameMode)) {
+        const move = convertToBoardIndex(x+d.dx, y+d.dy, gameMode);
+        const figure = board?.find(cell=> cell.position == move)?.figure;
+        if (figure && move) {
+          if (figure?.color !== this.color && 
+            isKingSafeAtPosition(gameMode, this.color, x+d.dx, y+d.dy, board)) {
+            possibleAttackMoves.add(move);
+          }
+        }
+      }
+    })
+
+    return possibleAttackMoves;
+  }
+}

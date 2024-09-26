@@ -13,5 +13,5 @@ export const convertToBoardIndex = (x: number, y: number, gameMode: "black"|"whi
   const xAxis = gameMode=="black" ? xAxisBlack : xAxisWhite;
   const yAxis = gameMode=="black" ? yAxisBlack : yAxisWhite;
   if (xAxis[x] && yAxis[y]) return xAxis[x]+yAxis[y];
-  return;
+  return "";
 }

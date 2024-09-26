@@ -9,3 +9,28 @@ export const xAxisWhiteConvert = {'h':0,'g':1,'f':2,'e':3,'d':4,'c':5,'b':6,'a':
 
 export const yAxisBlackConvert = {'1':0,'2':1,'3':2,'4':3,'5':4,'6':5,'7':6,'8':7};
 export const yAxisWhiteConvert = {'8':0,'7':1,'6':2,'5':3,'4':4,'3':5,'2':6,'1':7};
+
+export const lineDirections = [
+  { dx: 0, dy: 1 },
+  { dx: 0, dy: -1 }, 
+  { dx: 1, dy: 0 },  
+  { dx: -1, dy: 0 }  
+];
+
+export const diagonalDirections = [
+  { dx: 1, dy: 1 },
+  { dx: -1, dy: 1 },
+  { dx: -1, dy: -1 },
+  { dx: 1, dy: -1 }
+];
+
+export const lineAndDiagonalDirections = [
+  { dx: 0, dy: 1 },
+  { dx: 0, dy: -1 },
+  { dx: 1, dy: 0 },
+  { dx: -1, dy: 0 },
+  { dx: 1, dy: 1 },
+  { dx: -1, dy: 1 },
+  { dx: -1, dy: -1 },
+  { dx: 1, dy: -1 }
+];
