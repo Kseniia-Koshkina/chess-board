@@ -34,3 +34,24 @@ export const lineAndDiagonalDirections = [
   { dx: -1, dy: -1 },
   { dx: 1, dy: -1 }
 ];
+
+export const knightDirections = [
+  { dx: 1, dy: 2 },
+  { dx: -1, dy: 2 },
+  { dx: 1, dy: -2 },
+  { dx: -1, dy: -2 },
+  { dx: 2, dy: 1 },
+  { dx: 2, dy: -1 },
+  { dx: -2, dy: 1 },
+  { dx: -2, dy: -1 }
+];
+
+export const yourPawnAttackDirections = [
+  { dx: -1, dy: -1 },
+  { dx: 1, dy: -1 }
+];
+
+export const opponentPawnAttackDirections = [
+  { dx: 1, dy: 1 },
+  { dx: -1, dy: 1 }
+]

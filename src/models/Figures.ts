@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { BaseFigure, Cell, xAxis, yAxis } from ".";
-import { diagonalDirections, lineAndDiagonalDirections, lineDirections } from "../constants";
+import { diagonalDirections, knightDirections, lineAndDiagonalDirections, lineDirections } from "../constants";
 import { isKingSafeAtPosition } from "../logic";
 import { convertFromBoardIndex, convertToBoardIndex } from "../utils";
 
@@ -48,19 +48,8 @@ export class Knight extends BaseFigure {
   getPossibleMoves(gameMode:"white"|"black", board?: Cell[]) {
     const { x, y } = convertFromBoardIndex(this.x, this.y, gameMode);
     const possibleMoves = new Set<string>();
-    
-    const directions = [
-      { dx: 1, dy: 2 },
-      { dx: -1, dy: 2 },
-      { dx: 1, dy: -2 },
-      { dx: -1, dy: -2 },
-      { dx: 2, dy: 1 },
-      { dx: 2, dy: -1 },
-      { dx: -2, dy: 1 },
-      { dx: -2, dy: -1 }
-    ];
   
-    directions.map(d => {
+    knightDirections.map(d => {
       const move = convertToBoardIndex(x+d.dx, y+d.dy, gameMode);
       if (!board?.find(cell=> cell.position == move)?.figure && move) possibleMoves.add(move);
     })
@@ -70,19 +59,8 @@ export class Knight extends BaseFigure {
   getAttackMoves(gameMode:"white"|"black", board?: Cell[]) {
     const { x, y } = convertFromBoardIndex(this.x, this.y, gameMode);
     const possibleAttackMoves = new Set<string>();
-    
-    const directions = [
-      { dx: 1, dy: 2 },
-      { dx: -1, dy: 2 },
-      { dx: 1, dy: -2 },
-      { dx: -1, dy: -2 },
-      { dx: 2, dy: 1 },
-      { dx: 2, dy: -1 },
-      { dx: -2, dy: 1 },
-      { dx: -2, dy: -1 }
-    ];
   
-    directions.map(d => {
+    knightDirections.map(d => {
       const move = convertToBoardIndex(x+d.dx, y+d.dy, gameMode);
       const figure = board?.find(cell=> cell.position == move)?.figure;
       if (figure && figure?.color !== this.color && move ) possibleAttackMoves.add(move);
@@ -227,7 +205,6 @@ export class King extends BaseFigure {
         const move = convertToBoardIndex(x+d.dx, y+d.dy, gameMode);
         if (move) {
           if (isKingSafeAtPosition(gameMode, this.color, x+d.dx, y+d.dy, board)) {
-            console.log( move  );
             possibleMoves.add(move);
           }
         }

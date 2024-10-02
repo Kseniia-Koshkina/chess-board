@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import "./styles/ChessBoardStyles.css"
-import { convertFromBoardIndex } from "./utils"
 import { Cell, Move, Figure } from "./models"
 import { initBoard } from "./logic";
 
@@ -10,7 +9,7 @@ const ChessBoard = () => {
   const [board, setBoard] = useState<Cell[]>(initBoard(gameMode));
   const [move, setMove] = useState<Move>();
   const [moveFigure, setMoveFigure] = useState<Figure>(); 
-  // const []
+
   useEffect(()=>{
     updateBoard();
   }, [move]);
@@ -64,9 +63,9 @@ const ChessBoard = () => {
 
   return (
     <div className="board">
-      {board.map(cell=>{
+      {board.map(cell => {
         return (
-          <ChessCell cell={cell} makeMove={makeMove} move={move} moveFigure={moveFigure} board={board}/>
+          <ChessCell key={cell.position} cell={cell} makeMove={makeMove} move={move} moveFigure={moveFigure} board={board}/>
         )
       })}
     </div>

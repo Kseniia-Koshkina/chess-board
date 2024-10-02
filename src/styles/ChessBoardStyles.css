@@ -1,11 +1,9 @@
 .board {
-    background-color: aquamarine;
     width: 640px;
     height: 640px;
 }
 
 .cell {
-    background-color: rgb(1, 94, 63);
     width: 80px;
     height: 80px;
     float: right;
