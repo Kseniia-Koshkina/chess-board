@@ -19,45 +19,52 @@ const ChessBoard = () => {
       const cellIndexFrom = board?.findIndex(cell => cell.position == move?.from);
       const cellIndexTo = board?.findIndex(cell => cell.position == move?.to);
       const figureToMove = board[cellIndexFrom].figure;
-      const figureOnTheChosenCell = board[cellIndexTo].figure;
       const copyBoard = board;
-      let moveComplete = false;
 
-      if (figureOnTheChosenCell && figureToMove) {
-        if (figureOnTheChosenCell.color !== figureToMove?.color) {
-          if (figureToMove?.getAttackMoves(gameMode, board).has(move?.to || "")) {
-            figureToMove?.changePosition(move.to[0], move.to[1]);
-            copyBoard[cellIndexTo].figure = figureToMove;
-            copyBoard[cellIndexFrom].figure = undefined;
-            moveComplete = true;
-          }
-        }
-      }
-
-      if (!figureOnTheChosenCell && copyBoard && moveFigure?.getPossibleMoves(gameMode, board).has(move?.to || "") ) {
-        figureToMove?.changePosition(move.to[0], move.to[1]);
-        copyBoard[cellIndexTo].figure = figureToMove;
-        copyBoard[cellIndexFrom].figure = undefined;
-        moveComplete = true
-      }
-
+      figureToMove?.changePosition(move.to[0], move.to[1]);
+      copyBoard[cellIndexTo].figure = figureToMove;
+      copyBoard[cellIndexFrom].figure = undefined;
+      
       //king logic to implement
-      if (moveComplete) {
-        // if there was a check
-      }
-
+      // if there was a check
+      
       setBoard(copyBoard);
-      setMove({})
+      setMove({});
+      setMoveFigure(undefined);
     }
   }
 
   const makeMove = (cell: Cell) => {
-    if (cell.figure && cell.figure?.color == moveFigure?.color || cell.figure && !move?.from) {
+    const sameColorFigureOrInitFigure = cell.figure?.color == moveFigure?.color || cell.figure && !move?.from
+    if (sameColorFigureOrInitFigure) {
       setMove({from: cell.position});
       setMoveFigure(cell.figure);
     }
+
     else if (move?.from) {
-      setMove((prevMove) => ({ ...prevMove, to: cell.position }));
+      const emptyCell = !cell.figure;
+      const figureDifferentColor = cell.figure?.color !== moveFigure?.color;
+      const moveExists = moveFigure?.getPossibleMoves(gameMode, board).has(cell.position);
+      const attackMoveExists = moveFigure?.getAttackMoves(gameMode, board).has(cell.position);
+
+      if (emptyCell && moveExists) {
+        setMove((prevMove) => ({ ...prevMove, to: cell.position }));
+        return;
+      }
+
+      if (figureDifferentColor && attackMoveExists) {
+        setMove((prevMove) => ({ ...prevMove, to: cell.position }));
+        return;
+      }
+
+      if (emptyCell) {
+        setMove({});
+        setMoveFigure(undefined);
+        return
+      }
+
+      setMove({from: cell.position});
+      setMoveFigure(cell.figure);
     }
   }
 

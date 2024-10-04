@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { BaseFigure, Cell, xAxis, yAxis } from ".";
 import { diagonalDirections, knightDirections, lineAndDiagonalDirections, lineDirections } from "../constants";
-import { isKingSafeAtPosition } from "../logic";
+import { isKingSafeAtPosition } from "../logic/kingLogic";
 import { convertFromBoardIndex, convertToBoardIndex } from "../utils";
 
 export class Pawn extends BaseFigure {
