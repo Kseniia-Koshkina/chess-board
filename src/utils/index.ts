@@ -17,6 +17,6 @@ export const convertToBoardIndex = (x: number, y: number, gameMode: "black"|"whi
 }
 
 export const getBoardListIndex = (position: string, gameMode: "black"|"white") => {
-  const {x, y} = convertFromBoardIndex(position[0], position[1], gameMode);
+  const {x, y} = convertFromBoardIndex(position[0] as xAxis, position[1] as yAxis, gameMode);
   return x + y*8;
 }
