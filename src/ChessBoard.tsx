@@ -19,7 +19,7 @@ const ChessBoard = () => {
   const updateBoard = () => {
     if (move && move.to && move.from && moveFigure) {
       // needs to be moved to own function
-      const copyBoard = isCastleMove(move, moveFigure) ? makeCastle(board, move, moveFigure) : processMove(board, move);
+      const copyBoard = isCastleMove(move, moveFigure) ? makeCastle(board, move, moveFigure, gameMode) : processMove(board, move, gameMode);
       setBoard(copyBoard);
       setMove({});
       setMoveFigure(undefined);

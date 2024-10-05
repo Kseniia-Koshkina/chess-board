@@ -10,8 +10,13 @@ export const convertFromBoardIndex = (x: xAxis, y: yAxis, gameMode: string) => {
 }
 
 export const convertToBoardIndex = (x: number, y: number, gameMode: "black"|"white") => {
-  const xAxis = gameMode=="black" ? xAxisBlack : xAxisWhite;
-  const yAxis = gameMode=="black" ? yAxisBlack : yAxisWhite;
+  const xAxis = gameMode == "black" ? xAxisBlack : xAxisWhite;
+  const yAxis = gameMode == "black" ? yAxisBlack : yAxisWhite;
   if (xAxis[x] && yAxis[y]) return xAxis[x]+yAxis[y];
   return "";
+}
+
+export const getBoardListIndex = (position: string, gameMode: "black"|"white") => {
+  const {x, y} = convertFromBoardIndex(position[0], position[1], gameMode);
+  return x + y*8;
 }
