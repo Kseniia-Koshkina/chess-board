@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { BaseFigure, Cell, xAxis, yAxis } from ".";
 import { diagonalDirections, knightDirections, lineAndDiagonalDirections, lineDirections } from "../constants";
-import { isKingSafeAtPosition } from "../logic/kingLogic";
+import { castleMoves, isKingSafeAtPosition } from "../logic/kingLogic";
 import { convertFromBoardIndex, convertToBoardIndex } from "../utils";
 
+// needs to be updated
 export class Pawn extends BaseFigure {
   constructor (x: xAxis, y: yAxis, color:  "black"|"white") {
     super("pawn", x, y, color)
@@ -198,25 +199,25 @@ export class King extends BaseFigure {
 
   getPossibleMoves(gameMode:"white"|"black", board?: Cell[]) {
     const { x, y } = convertFromBoardIndex(this.x, this.y, gameMode);
-    const possibleMoves = new Set<string>();
+    const possibleMovesAndCatles = castleMoves(gameMode, this.moveMade, x, y, board)
 
     lineAndDiagonalDirections.map(d => {
       if (convertToBoardIndex(x+d.dx, y+d.dy, gameMode) && board && !board.find(cell => cell.position == convertToBoardIndex(x+d.dx, y+d.dy, gameMode))?.figure ) {
         const move = convertToBoardIndex(x+d.dx, y+d.dy, gameMode);
         if (move) {
           if (isKingSafeAtPosition(gameMode, this.color, x+d.dx, y+d.dy, board)) {
-            possibleMoves.add(move);
+            possibleMovesAndCatles.add(move);
           }
         }
       }
-    })
-    return possibleMoves;
+    });
+
+    return possibleMovesAndCatles;
   }
 
   getAttackMoves(gameMode:"white"|"black", board?: Cell[]) {
     const {x, y} = convertFromBoardIndex(this.x, this.y, gameMode);
     const possibleAttackMoves = new Set<string>();
-
     lineAndDiagonalDirections.map(d => {
       if (convertToBoardIndex(x+d.dx, y+d.dy, gameMode)) {
         const move = convertToBoardIndex(x+d.dx, y+d.dy, gameMode);

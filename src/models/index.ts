@@ -5,16 +5,19 @@ export interface Figure {
   name: string,
   x: xAxis,
   y: yAxis,
+  moveMade: boolean,
   color: "black"|"white",
   getPossibleMoves(gameMode: "black"|"white", board: Cell[]): Set<string>,
   getAttackMoves(gameMode: "black"|"white", board?: Cell[]): Set<string>,
-  changePosition(x: xAxis, y: yAxis): void
+  changePosition(x: xAxis, y: yAxis): void,
+  moveWasMade(): void
 }
 
 export abstract class BaseFigure implements Figure {
   name: string
   x: xAxis
   y: yAxis
+  moveMade: boolean
   color: "black"|"white"
 
   constructor (name: string, x: xAxis, y: yAxis, color:  "black"|"white") {
@@ -22,11 +25,16 @@ export abstract class BaseFigure implements Figure {
     this.x = x;
     this.y = y;
     this.color = color;
+    this.moveMade = false;
   }
 
   changePosition(x: xAxis, y: yAxis) {
     this.x = x;
     this.y = y;
+  }
+
+  moveWasMade() {
+    this.moveMade = true;
   }
 
   abstract getPossibleMoves(gameMode: "black"|"white", board: Cell[]): Set<string>

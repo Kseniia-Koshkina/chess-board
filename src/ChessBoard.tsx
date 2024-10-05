@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import "./styles/ChessBoardStyles.css"
 import { Cell, Move, Figure } from "./models"
 import { initBoard } from "./logic";
+import { isCastleMove, makeCastle } from "./logic/kingLogic";
+import { processMove } from "./logic/moveLogic";
 
 const gameMode  = "white";
 
@@ -15,19 +17,9 @@ const ChessBoard = () => {
   }, [move]);
 
   const updateBoard = () => {
-    if (move && move.to && move.from) {
-      const cellIndexFrom = board?.findIndex(cell => cell.position == move?.from);
-      const cellIndexTo = board?.findIndex(cell => cell.position == move?.to);
-      const figureToMove = board[cellIndexFrom].figure;
-      const copyBoard = board;
-
-      figureToMove?.changePosition(move.to[0], move.to[1]);
-      copyBoard[cellIndexTo].figure = figureToMove;
-      copyBoard[cellIndexFrom].figure = undefined;
-      
-      //king logic to implement
-      // if there was a check
-      
+    if (move && move.to && move.from && moveFigure) {
+      // needs to be moved to own function
+      const copyBoard = isCastleMove(move, moveFigure) ? makeCastle(board, move, moveFigure) : processMove(board, move);
       setBoard(copyBoard);
       setMove({});
       setMoveFigure(undefined);
@@ -60,7 +52,7 @@ const ChessBoard = () => {
       if (emptyCell) {
         setMove({});
         setMoveFigure(undefined);
-        return
+        return;
       }
 
       setMove({from: cell.position});
