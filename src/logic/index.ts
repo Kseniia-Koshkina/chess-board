@@ -1,6 +1,6 @@
 import { xAxisBlack, xAxisWhite, yAxisBlack, yAxisWhite } from "../constants";
 import { Cell, Figure } from "../models";
-import { King, Rook } from "../models/Figures";
+import { King, Pawn, Rook } from "../models/Figures";
 import { convertFromBoardIndex } from "../utils";
 
 const figure: Figure[] = [
@@ -11,6 +11,8 @@ const figure: Figure[] = [
   new King("e", "8", "black"),
   new Rook("a", "1","white"),
   new Rook("h", "1","white"),
+  new Pawn("b", "7", "white"),
+  new Pawn("g", "2", "black")
 ];
 
 export const initBoard = (gameMode: "white"|"black") => {

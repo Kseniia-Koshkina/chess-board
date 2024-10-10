@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react"
 import "./styles/ChessBoardStyles.css"
-import { Cell, Move, Figure } from "./models"
+import { Cell, Move, Figure, Promotion, xAxis, yAxis } from "./models"
 import { initBoard } from "./logic";
 import { isCastleMove, makeCastle } from "./logic/kingLogic";
 import { processMove } from "./logic/moveLogic";
+import { Queen } from "./models/Figures";
+import { isPawnPromotion } from "./logic/pawnLogic";
+import { getBoardListIndex } from "./utils";
 
 const gameMode  = "white";
 
@@ -11,18 +14,29 @@ const ChessBoard = () => {
   const [board, setBoard] = useState<Cell[]>(initBoard(gameMode));
   const [move, setMove] = useState<Move>();
   const [moveFigure, setMoveFigure] = useState<Figure>(); 
+  const [pawnPromotion, setPawnPromotion] = useState<Promotion>();
 
   useEffect(()=>{
     updateBoard();
-  }, [move]);
+  }, [move, pawnPromotion?.figure]);
 
   const updateBoard = () => {
-    if (move && move.to && move.from && moveFigure) {
+    if (move && move.to && move.from && moveFigure && !pawnPromotion?.figure) {
       // needs to be moved to own function
+      if (isPawnPromotion(move, moveFigure)) {
+        setPawnPromotion({position: move.to});
+      }
       const copyBoard = isCastleMove(move, moveFigure) ? makeCastle(board, move, moveFigure, gameMode) : processMove(board, move, gameMode);
       setBoard(copyBoard);
       setMove({});
       setMoveFigure(undefined);
+    }
+    if (pawnPromotion?.figure && pawnPromotion.position) {
+      //make promotion
+      const copyBoard = board;
+      copyBoard[getBoardListIndex(pawnPromotion.position, gameMode)].figure = pawnPromotion?.figure;
+      setBoard(copyBoard);
+      setPawnPromotion({})
     }
   }
 
@@ -61,13 +75,21 @@ const ChessBoard = () => {
   }
 
   return (
-    <div className="board">
-      {board.map(cell => {
-        return (
-          <ChessCell key={cell.position} cell={cell} makeMove={makeMove} move={move} moveFigure={moveFigure} board={board}/>
-        )
-      })}
-    </div>
+    <>
+      <div className="board">
+        {board.map(cell => {
+          return (
+            <ChessCell key={cell.position} cell={cell} makeMove={makeMove} move={move} moveFigure={moveFigure} board={board}/>
+          )
+        })}
+      </div>
+      <div>
+        {pawnPromotion?.position && <button onClick={()=> {
+          const newP: Promotion = {position: pawnPromotion.position, figure: new Queen(pawnPromotion?.position[0] as xAxis, pawnPromotion?.position[1] as yAxis, "white")}
+          setPawnPromotion(newP)
+        }}>{pawnPromotion?.position}</button>}
+      </div>
+    </>
   )
 }
 

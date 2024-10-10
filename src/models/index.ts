@@ -51,3 +51,8 @@ export interface Move {
   from?: string,
   to?: string
 }
+
+export interface Promotion {
+  position?: string,
+  figure?: Figure
+}
