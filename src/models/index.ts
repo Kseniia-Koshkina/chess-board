@@ -5,6 +5,7 @@ export interface Figure {
   name: string,
   x: xAxis,
   y: yAxis,
+	position: string,
   moveMade: boolean,
   color: "black"|"white",
   getPossibleMoves(gameMode: "black"|"white", board: Cell[]): Set<string>,
@@ -14,11 +15,12 @@ export interface Figure {
 }
 
 export abstract class BaseFigure implements Figure {
-  name: string
-  x: xAxis
-  y: yAxis
-  moveMade: boolean
-  color: "black"|"white"
+  name: string;
+  x: xAxis;
+  y: yAxis;
+	position: string;
+  moveMade: boolean;
+  color: "black"|"white";
 
   constructor (name: string, x: xAxis, y: yAxis, color:  "black"|"white") {
     this.name = name;
@@ -26,11 +28,13 @@ export abstract class BaseFigure implements Figure {
     this.y = y;
     this.color = color;
     this.moveMade = false;
+		this.position = x + y;
   }
 
   changePosition(x: xAxis, y: yAxis) {
     this.x = x;
     this.y = y;
+		this.position = x + y;
   }
 
   moveWasMade() {
@@ -48,9 +52,9 @@ export interface Cell {
 }
 
 export interface Move {
-  from?: string,
-  to?: string,
-	selectedFigure?: Figure
+  from: string,
+  to: string,
+	figure: Figure
 }
 
 export interface Promotion {
