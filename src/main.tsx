@@ -1,9 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import ChessBoard from './ChessBoard.tsx'
+import "./styles/ChessBoardStyles.css"
+import Board from './components/Board.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ChessBoard/>
+    <Board/>
   </StrictMode>,
 )

@@ -49,7 +49,8 @@ export interface Cell {
 
 export interface Move {
   from?: string,
-  to?: string
+  to?: string,
+	selectedFigure?: Figure
 }
 
 export interface Promotion {

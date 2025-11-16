@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react"
 import "./styles/ChessBoardStyles.css"
 import { Cell, Move, Figure, Promotion, xAxis, yAxis } from "./models"
-import { initBoard } from "./logic";
+import { initBoard } from "./utils";
 import { isCastleMove, makeCastle } from "./logic/kingLogic";
-import { processMove } from "./logic/moveLogic";
-import { Queen } from "./models/Figures";
 import { isPawnPromotion } from "./logic/pawnLogic";
 import { getBoardListIndex } from "./utils";
+import { Queen } from "./models/figures/Queen";
 
 const gameMode  = "white";
 
@@ -16,7 +15,7 @@ const ChessBoard = () => {
   const [moveFigure, setMoveFigure] = useState<Figure>(); 
   const [pawnPromotion, setPawnPromotion] = useState<Promotion>();
 
-  useEffect(()=>{
+  useEffect(()=> {
     updateBoard();
   }, [move, pawnPromotion?.figure]);
 
@@ -31,6 +30,7 @@ const ChessBoard = () => {
       setMove({});
       setMoveFigure(undefined);
     }
+
     if (pawnPromotion?.figure && pawnPromotion.position) {
       //make promotion
       const copyBoard = board;
@@ -79,22 +79,41 @@ const ChessBoard = () => {
       <div className="board">
         {board.map(cell => {
           return (
-            <ChessCell key={cell.position} cell={cell} makeMove={makeMove} move={move} moveFigure={moveFigure} board={board}/>
+            <ChessCell 
+							key={cell.position} 
+							cell={cell} 
+							makeMove={makeMove} 
+							move={move} 
+							moveFigure={moveFigure} 
+							board={board}
+						/>
           )
         })}
       </div>
       <div>
-        {pawnPromotion?.position && <button onClick={()=> {
-          const newP: Promotion = {position: pawnPromotion.position, figure: new Queen(pawnPromotion?.position[0] as xAxis, pawnPromotion?.position[1] as yAxis, "white")}
+        {/* {pawnPromotion?.position && <button onClick={()=> {
+          const newP: Promotion = {
+						position: pawnPromotion.position, 
+						figure: new Queen(
+							pawnPromotion?.position[0] as xAxis, 
+							pawnPromotion?.position[1] as yAxis, 
+							"white")
+						}
           setPawnPromotion(newP)
-        }}>{pawnPromotion?.position}</button>}
+        }}>{pawnPromotion?.position}</button>} */}
       </div>
     </>
   )
 }
 
 
-const ChessCell = (props: {cell: Cell, makeMove: (cell: Cell) => void, move?: Move, moveFigure?: Figure, board: Cell[]}) => {
+const ChessCell = (props: {
+	cell: Cell, 
+	makeMove: (cell: Cell) => void, 
+	move?: Move, 
+	moveFigure?: Figure, 
+	board: Cell[]
+}) => {
   let color = props.cell.color;
   if (props.move && props.moveFigure) {
     if (props.moveFigure?.getPossibleMoves(gameMode, props.board).has(props.cell.position)) color = "blue";
