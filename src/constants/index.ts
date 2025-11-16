@@ -54,4 +54,7 @@ export const yourPawnAttackDirections = [
 export const opponentPawnAttackDirections = [
   { dx: 1, dy: 1 },
   { dx: -1, dy: 1 }
-]
+];
+
+export const yourPawnDirection = {dx: 0, dy: -1};
+export const opponentPawnDirection = {dx: 0, dy: 1};

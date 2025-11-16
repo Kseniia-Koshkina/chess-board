@@ -1,38 +1,72 @@
-import { BaseFigure, xAxis, yAxis } from "..";
-import { convertFromBoardIndex, convertToBoardIndex } from "../../utils";
+import { 
+	BaseFigure, 
+	Cell, 
+	Direction, 
+	xAxis, 
+	yAxis 
+} from "..";
+import { 
+	opponentPawnAttackDirections, 
+	opponentPawnDirection, 
+	yourPawnAttackDirections, 
+	yourPawnDirection
+} from "../../constants";
+import { 
+	convertFromBoardIndex, 
+	convertToBoardIndex, 
+	getListIndexByCoordinates 
+} from "../../utils";
 
 export class Pawn extends BaseFigure {
 	constructor (x: xAxis, y: yAxis, color:  "black"|"white") {
-		super("pawn", x, y, color)
+		super("pawn", x, y, color, []);
 	}
 
-	getPossibleMoves(gameMode:"white"|"black") {
-		if (gameMode == this.color) {
-			const {x, y} = convertFromBoardIndex(this.x, this.y, gameMode);
-			const possibleMoves = new Set<string>()
-			possibleMoves.add(convertToBoardIndex(x, y-1, gameMode));
-			if (y == 6) possibleMoves.add(convertToBoardIndex(x, y-2, gameMode));
-			return possibleMoves;
-		}
+	getPossibleMoves(gameMode: "white"|"black", board: Cell[]) {
+		const pawnAttackDirections = gameMode === this.color 
+			? yourPawnAttackDirections 
+			: opponentPawnAttackDirections;
+
+		const pawnLongMoveDirection = gameMode === this.color ? -2 : 2;
+		const pawnStartPosistion = gameMode === this.color ? 6 : 2;
+		const pawnMoveDireation = gameMode === this.color 
+			? yourPawnDirection
+			: opponentPawnDirection
+
+		const possibleAttackMoves = this.getAttackMoves(gameMode, board, pawnAttackDirections);
+		const possibleMoves = new Set<string>();
+
+		
 		const {x, y} = convertFromBoardIndex(this.x, this.y, gameMode);
-		const possibleMoves = new Set<string>()
-		possibleMoves.add(convertToBoardIndex(x, y+1, gameMode));
-		if (y == 1) possibleMoves.add(convertToBoardIndex(x, y+2, gameMode));
-		return possibleMoves;
+
+		possibleMoves.add(convertToBoardIndex(x, y + pawnMoveDireation.dy, gameMode));
+		if (y == pawnStartPosistion) 
+			possibleMoves.add(convertToBoardIndex(x, y + pawnLongMoveDirection, gameMode));
+
+		return {
+			possibleMoves,
+			possibleAttackMoves
+		};
 	}
 
-	getAttackMoves(gameMode:"white"|"black") {
-		if (gameMode == this.color) {
-			const {x, y} = convertFromBoardIndex(this.x, this.y, gameMode);
-			const possibleMoves = new Set<string>()
-			possibleMoves.add(convertToBoardIndex(x-1, y-1, gameMode));
-			possibleMoves.add(convertToBoardIndex(x+1, y-1, gameMode));
-			return possibleMoves;
-		}
+	private getAttackMoves(
+		gameMode: "white"|"black", 
+		board: Cell[], 
+		attackDirection: Direction[]
+	) {
+		const possibleAttackMoves = new Set<string>();
 		const {x, y} = convertFromBoardIndex(this.x, this.y, gameMode);
-		const possibleMoves = new Set<string>()
-		possibleMoves.add(convertToBoardIndex(x+1, y+1, gameMode));
-		possibleMoves.add(convertToBoardIndex(x-1, y+1, gameMode));
-		return possibleMoves;
+
+		attackDirection.map(d => {
+			const index = getListIndexByCoordinates(x + d.dx, y + d.dy);
+			const move = convertToBoardIndex(x + d.dx, y + d.dy, gameMode);
+			if (
+				index !== -1 
+				&& board[index].figure 
+				&& board[index].figure.color !== this.color) 
+				possibleAttackMoves.add(move);
+		});
+
+		return possibleAttackMoves
 	}
 }

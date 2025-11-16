@@ -35,9 +35,10 @@ const useChessEngine = (gameMode: "white"|"black") => {
 
 	const selectFigureToMove = (figure?: Figure) => {
 		if (!figure) return;
+		const {possibleMoves, possibleAttackMoves} = engine.getPossibleMoves(figure)
 		setSelectedFigure(figure);
-		setPossibleMoves(engine.getPossibleMoves(figure));
-		setPossibleAttackMoves(engine.getPossibleAttackMoves(figure));
+		setPossibleMoves(possibleMoves);
+		setPossibleAttackMoves(possibleAttackMoves);
 	}
 
 	const cleanSelectedFigure = () => {

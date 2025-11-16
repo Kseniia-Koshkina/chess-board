@@ -22,10 +22,6 @@ export class ChessEngine {
 		return figure.getPossibleMoves(this.gameMode, this.board);
 	}
 
-	getPossibleAttackMoves = (figure: Figure) => {
-		return figure.getAttackMoves(this.gameMode, this.board);
-	}
-
 	makeMove = (move: Move) => {
 		if (this.isCastle(move)) this.makeCastle(move);
 		else this.makeStandartMove(move);
@@ -42,7 +38,7 @@ export class ChessEngine {
     this.board[cellIndexFrom].figure = undefined;
 	}
 
-	isCastle = (move: Move): boolean => {
+	private isCastle = (move: Move): boolean => {
 		if (move.figure.name !== 'king') return false;
 		const castleTo = move.figure.color == "white" 
 			? new Set(["b1", "g1"]) 
