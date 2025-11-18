@@ -69,25 +69,27 @@ export class King extends BaseFigure {
 		let left = x + 1;
 		let right = x - 1;
 
-		if (rookForLongCastle) {
+		if (rookForLongCastle && !rookForLongCastle.moveMade) {
 			while (left <= 7) {
 				if (left == 7) 
 					possiblCastles.add(
 						convertToBoardIndex(x + 3*index, y, gameMode)
 					);
-				if (board[getListIndexByCoordinates(left, y)].figure) 
+				if (board[getListIndexByCoordinates(left, y)].figure ||
+					!isKingSafeAtPosition(gameMode, this.color, left, y, board)) 
 					break
 				left++
 			}
 		}
 
-		if (rookForShortCastle) {
+		if (rookForShortCastle && !rookForShortCastle.moveMade) {
 			while (right >= 0) {
 				if (right == 0) 
 					possiblCastles.add(
 						convertToBoardIndex(x+2*-1*index, y, gameMode)
 					);
-				if (board[getListIndexByCoordinates(right, y)].figure) 
+				if (board[getListIndexByCoordinates(right, y)].figure || 
+					!isKingSafeAtPosition(gameMode, this.color, right, y, board)) 
 					break
 				right--
 			}
