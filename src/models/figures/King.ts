@@ -2,7 +2,8 @@ import {
 	BaseFigure, 
 	Cell, 
 	xAxis, 
-	yAxis 
+	yAxis,
+	Figure
 } from "..";
 import { lineAndDiagonalDirections } from "../../constants";
 import { isKingSafeAtPosition } from "../../logic/kingLogic";
@@ -28,7 +29,13 @@ export class King extends BaseFigure {
 			const index = getListIndexByCoordinates(x+d.dx, y+d.dy);
       if (index !== -1) {
         const move = convertToBoardIndex(x+d.dx, y+d.dy, gameMode);
-				const kingSafeAtPosition = isKingSafeAtPosition(gameMode, this.color, x+d.dx, y+d.dy, board)
+				const kingSafeAtPosition = isKingSafeAtPosition(
+					gameMode, 
+					this.color, 
+					x+d.dx, 
+					y+d.dy, 
+					board
+				);
 				if (board[index].figure 
 					&& board[index].figure.color !== this.color
 					&& kingSafeAtPosition
@@ -66,35 +73,53 @@ export class King extends BaseFigure {
 		const rookForLongCastle = board[boardIndexForLongCastle].figure;
 		const rookForShortCastle = board[boardIndexForShortCastle].figure;
 
-		let left = x + 1;
-		let right = x - 1;
+		const canMakeLongCastle = this.canMakeCastleInDirection(
+			x,
+			y,
+			board,
+			gameMode,
+			1,
+			rookForLongCastle
+		)
 
-		if (rookForLongCastle && !rookForLongCastle.moveMade) {
-			while (left <= 7) {
-				if (left == 7) 
-					possiblCastles.add(
-						convertToBoardIndex(x + 3*index, y, gameMode)
-					);
-				if (board[getListIndexByCoordinates(left, y)].figure ||
-					!isKingSafeAtPosition(gameMode, this.color, left, y, board)) 
-					break
-				left++
-			}
-		}
+		const canMakeShortCastle = this.canMakeCastleInDirection(
+			x,
+			y,
+			board,
+			gameMode,
+			-1,
+			rookForShortCastle
+		)
 
-		if (rookForShortCastle && !rookForShortCastle.moveMade) {
-			while (right >= 0) {
-				if (right == 0) 
-					possiblCastles.add(
-						convertToBoardIndex(x+2*-1*index, y, gameMode)
-					);
-				if (board[getListIndexByCoordinates(right, y)].figure || 
-					!isKingSafeAtPosition(gameMode, this.color, right, y, board)) 
-					break
-				right--
-			}
-		}
+
+		if (canMakeLongCastle)
+			possiblCastles.add(
+				convertToBoardIndex(x + 2*index, y, gameMode)
+			);
+
+		if (canMakeShortCastle) 
+			possiblCastles.add(
+				convertToBoardIndex(x+2*-1*index, y, gameMode)
+			);
 
 		return possiblCastles;
+	}
+
+	private canMakeCastleInDirection = (
+		x: number,
+		y: number,
+		board: Cell[],
+		gameMode: 'white'|'black',
+		direction: number,
+		rook?: Figure,
+	) => {
+		if (!rook || rook.moveMade) return false;
+		for (let i = 1; i <= 2; i++) {
+			if (board[getListIndexByCoordinates(x + i * direction, y)].figure 
+			|| !isKingSafeAtPosition(gameMode, this.color, x + i * direction, y, board))
+				return false;
+		}
+
+		return true;
 	}
 }

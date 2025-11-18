@@ -97,8 +97,8 @@ export class ChessEngine {
 	private isCastle = (move: Move): boolean => {
 		if (move.figure.name !== 'king') return false;
 		const castleTo = move.figure.color == "white" 
-			? new Set(["b1", "g1"]) 
-			: new Set(["b8", "g8"]);
+			? new Set(["c1", "g1"]) 
+			: new Set(["c8", "g8"]);
 		if (castleTo.has(move.to)) return true;
 		return false;
 	}
@@ -110,9 +110,9 @@ export class ChessEngine {
 		let rookMoveTo = "";
 		if (whiteKing) {
 			switch (castleTo) {
-				case "b1": {
+				case "c1": {
 					rookMoveFrom = "a1";
-					rookMoveTo = "c1";
+					rookMoveTo = "d1";
 					break
 				}
 				case "g1": {
@@ -124,9 +124,9 @@ export class ChessEngine {
 		}
 		else {
 			switch (castleTo) {
-				case "b8": {
+				case "c8": {
 					rookMoveFrom = "a8";
-					rookMoveTo = "c8";
+					rookMoveTo = "d8";
 					break
 				}
 				case "g8": {
