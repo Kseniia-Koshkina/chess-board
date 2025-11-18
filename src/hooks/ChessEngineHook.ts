@@ -11,7 +11,10 @@ const useChessEngine = (gameMode: "white"|"black") => {
 	const [possibleMoves, setPossibleMoves] = useState<Set<string>>(defaultSet);
 	const [possibleAttackMoves, setPossibleAttackMoves] = useState<Set<string>>(defaultSet);
 
-	const handleInteraction = (cellPosition: string, figure?: Figure) => {
+	const handleInteraction = (
+		cellPosition: string, 
+		figure?: Figure
+	) => {
 		if (!selectedFigure) {
 			selectFigureToMove(figure);
 			return;
@@ -47,7 +50,10 @@ const useChessEngine = (gameMode: "white"|"black") => {
 		setSelectedFigure(undefined);
 	}
 
-	const makeMove = (figure: Figure, cellPosition: string) => {
+	const makeMove = (
+		figure: Figure, 
+		cellPosition: string
+	) => {
 		if (!figure) return;
 
 		const move = {

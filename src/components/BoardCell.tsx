@@ -4,7 +4,10 @@ interface Props {
 	cell: Cell, 
 	possibleMoves: Set<string>,
 	possibleAttackMoves: Set<string>,
-	handleInteraction: (cellPosition: string, figure?: Figure) => void
+	handleInteraction: (
+		cellPosition: string, 
+		figure?: Figure
+	) => void
 }
 
 const BoardCell = ({cell, possibleMoves, possibleAttackMoves,	handleInteraction} : Props)  => {
