@@ -1,14 +1,24 @@
 import { Cell, Figure, Move, xAxis, yAxis } from "..";
 import { isKingSafeAtPosition } from "../../logic/kingLogic";
-import { convertFromBoardIndex, getBoardListIndex} from "../../utils";
+import { convertFromBoardIndex, getBoardListIndex, stringSetIntersection} from "../../utils";
+import { getAttack } from "../../utils/getLineAttack";
 import { initBoard, getInitKingPositions } from "../../utils/initBoard";
 import { King } from "../figures/King";
 
+/*
+what is left:
+
+- add pawn promotion handler
+*/
 export class ChessEngine {
 	private gameMode: 'white' | 'black';
 	private board: Cell[];
 	private blackKing: Figure;
 	private whiteKing: Figure;
+	private kingUnderCheck: {
+		position: string,
+		color: 'white'|'black'
+	} = {position: "", color: "black"};
 
 	constructor(gameMode: 'white' | 'black') {
 		const kings = getInitKingPositions();
@@ -27,8 +37,43 @@ export class ChessEngine {
 	}
 
 	getPossibleMoves = (figure: Figure) => {
-		if (this.isCheck())
-			if (figure.name === "king") figure = figure.color === "white" ? this.whiteKing : this.blackKing;
+		if (this.isCheck()) {
+			if (figure.name === "king") {
+				figure = figure.color === "white" 
+					? this.whiteKing 
+					: this.blackKing;
+				console.log(figure)
+				return (figure as King).getPossibleMoves(this.gameMode, this.board);
+			}
+
+			if (figure.color !== this.kingUnderCheck.color)
+				return figure.getPossibleMoves(this.gameMode,	this.board);
+
+			const attackLine = getAttack(
+				this.kingUnderCheck.position,
+				this.kingUnderCheck.color,
+				this.board,
+				this.gameMode
+			)
+
+			const {possibleMoves, possibleAttackMoves} = figure.getPossibleMoves(
+				this.gameMode, 
+				this.board
+			);
+
+			if (attackLine) 
+				return {
+					possibleMoves: stringSetIntersection(
+						attackLine, 
+						possibleMoves
+					),
+					possibleAttackMoves: stringSetIntersection(
+						attackLine, 
+						possibleAttackMoves
+					),
+				}
+		}
+
 		return figure.getPossibleMoves(this.gameMode, this.board);
 	}
 
@@ -109,9 +154,11 @@ export class ChessEngine {
 
 	private trackKing = (move: Move) => {
 		const {figure} = move;
+		figure.position = move.to;
 		if (figure.name !== "king") return;
-		if (figure.color === "white") this.whiteKing = {...figure, position: move.to};
-		else this.blackKing = {...figure, position: move.to};
+		if (figure.color === "white") this.whiteKing = figure;
+
+		else this.blackKing = figure;
 	}
 
 	private isCheck = () => {
@@ -134,9 +181,21 @@ export class ChessEngine {
 			this.board
 		);
 
-		if (!whiteKingSafe) (this.whiteKing as King).wasCheck();
-		if (!blackKingSafe) (this.blackKing as King).wasCheck();
+		if (!whiteKingSafe) {
+			this.kingUnderCheck = {
+				position: this.whiteKing.position,
+				color: 'white'
+			};
+			(this.whiteKing as King).wasCheck();
+		}
+		if (!blackKingSafe) {
+			this.kingUnderCheck = {
+				position: this.blackKing.position,
+				color: 'black'
+			};
+			(this.blackKing as King).wasCheck();
+		}
 
-		return !whiteKingSafe && blackKingSafe;
+		return !(whiteKingSafe && blackKingSafe);
 	}
 }

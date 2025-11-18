@@ -5,4 +5,4 @@ export class Bishop extends BaseFigure {
 	constructor (x: xAxis, y: yAxis, color:  "black"|"white") {
 		super("bishop", x, y, color, diagonalDirections)
 	}
-} 
+}

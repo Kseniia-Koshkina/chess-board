@@ -46,6 +46,7 @@ export class King extends BaseFigure {
   }
 
 	wasCheck = () => {
+		if (this.wasUnderAttack) return;
 		this.wasUnderAttack = true;
 	}
 
