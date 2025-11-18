@@ -15,7 +15,8 @@ export const checkForLineAttacks = (
 		while (true) {
 			const index = getListIndexByCoordinates(x + d.dx*i, y + d.dy*i);
 			if (index === -1) break;
-			if (board[index].figure) {
+			if (board[index].figure 
+				&& board[index].figure.name !== "king") {
 				if (board[index].figure.color !== color 
 					&& possibleAttackFigures.includes(board[index].figure.name)
 				)

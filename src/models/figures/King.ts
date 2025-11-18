@@ -1,15 +1,25 @@
-import { BaseFigure, Cell, xAxis, yAxis } from "..";
+import { 
+	BaseFigure, 
+	Cell, 
+	xAxis, 
+	yAxis 
+} from "..";
 import { lineAndDiagonalDirections } from "../../constants";
 import { isKingSafeAtPosition } from "../../logic/kingLogic";
-import { convertFromBoardIndex, convertToBoardIndex, getListIndexByCoordinates } from "../../utils";
+import { 
+	convertFromBoardIndex, 
+	convertToBoardIndex, 
+	getListIndexByCoordinates 
+} from "../../utils";
 
 export class King extends BaseFigure {
   constructor (x: xAxis, y: yAxis, color:  "black"|"white") {
     super("king", x, y, color, lineAndDiagonalDirections)
   }
+	private wasUnderAttack = false;
 
   getPossibleMoves(gameMode:"white"|"black", board: Cell[]) {
-    const { x, y } = convertFromBoardIndex(this.x, this.y, gameMode);
+    const { x, y } = convertFromBoardIndex(this.position, gameMode);
     const possibleMoves = this.getCastleMoves(gameMode, board);
 
 		const possibleAttackMoves = new Set<string>();
@@ -18,10 +28,13 @@ export class King extends BaseFigure {
 			const index = getListIndexByCoordinates(x+d.dx, y+d.dy);
       if (index !== -1) {
         const move = convertToBoardIndex(x+d.dx, y+d.dy, gameMode);
+				const kingSafeAtPosition = isKingSafeAtPosition(gameMode, this.color, x+d.dx, y+d.dy, board)
 				if (board[index].figure 
-					&& board[index].figure.color !== this.color) 
+					&& board[index].figure.color !== this.color
+					&& kingSafeAtPosition
+				) 
 					possibleAttackMoves.add(move);
-        if (isKingSafeAtPosition(gameMode, this.color, x+d.dx, y+d.dy, board))
+        if (kingSafeAtPosition)
           possibleMoves.add(move);
       }
     });
@@ -32,21 +45,25 @@ export class King extends BaseFigure {
 		};
   }
 
+	wasCheck = () => {
+		this.wasUnderAttack = true;
+	}
+
 	private getCastleMoves(
 		gameMode: "white" | "black",
 		board: Cell[]
 	) {
-		const { x, y } = convertFromBoardIndex(this.x, this.y, gameMode);
+		const { x, y } = convertFromBoardIndex(this.position, gameMode);
 		const possiblCastles = new Set<string>();
-		if (this.moveMade) return possiblCastles;
+		if (this.moveMade || this.wasUnderAttack) return possiblCastles;
 		const indexForLongCastle = gameMode == "white" ? 7 : 0;
 		const indexForShortCastle = gameMode == "white" ? 0 : 7;
 		const index = gameMode == "white" ? 1 : -1;
 
 		const boardIndexForLongCastle = getListIndexByCoordinates(indexForLongCastle, y);
 		const boardIndexForShortCastle = getListIndexByCoordinates(indexForShortCastle, y);
-		const rookForLongCastle = board ? board[boardIndexForLongCastle].figure : undefined;
-		const rookForShortCastle = board ? board[boardIndexForShortCastle].figure : undefined;
+		const rookForLongCastle = board[boardIndexForLongCastle].figure;
+		const rookForShortCastle = board[boardIndexForShortCastle].figure;
 
 		let left = x + 1;
 		let right = x - 1;
@@ -75,6 +92,6 @@ export class King extends BaseFigure {
 			}
 		}
 
-		return possiblCastles
+		return possiblCastles;
 	}
 }

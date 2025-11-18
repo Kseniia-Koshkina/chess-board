@@ -12,39 +12,46 @@ export const isKingSafeAtPosition = (
   y: number,
   board: Cell[]
 ): boolean => {
-  const rookOrQueenAttack = checkForLineAttacks(
-		lineDirections,
-		x,
-		y,
-		kingColor,
-		["rook", "queen"],
-		board
-	);
+	if (
+		checkForLineAttacks(
+			lineDirections,
+			x,
+			y,
+			kingColor,
+			["rook", "queen"],
+			board
+		)
+	) return false;
 
-	const bishopOrQueenAttack = checkForLineAttacks(
-		diagonalDirections,
-		x,
-		y,
-		kingColor,
-		["bishop", "queen"],
-		board
-	);
+	if (
+		checkForLineAttacks(
+			diagonalDirections,
+			x,
+			y,
+			kingColor,
+			["bishop", "queen"],
+			board
+		)
+	) return false;
 
-	const knightAttack = checkForKnightAttack(
-		x,
-		y,
-		kingColor,
-		board
-	)
+	if (
+		checkForKnightAttack(
+			x,
+			y,
+			kingColor,
+			board
+		)
+	) return false;
 
-	const pawnAttack = checkForPawnAttack(
-		x, 
-		y,
-		kingColor,
-		board,
-		gameMode
-	)
+	if (
+		checkForPawnAttack(
+			x, 
+			y,
+			kingColor,
+			board,
+			gameMode
+		)
+	) return false;
 
-	if (rookOrQueenAttack || bishopOrQueenAttack || knightAttack || pawnAttack) return false;
   return true;
 }

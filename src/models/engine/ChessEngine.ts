@@ -1,13 +1,21 @@
 import { Cell, Figure, Move, xAxis, yAxis } from "..";
-import { getBoardListIndex, initBoard } from "../../utils";
+import { isKingSafeAtPosition } from "../../logic/kingLogic";
+import { convertFromBoardIndex, getBoardListIndex} from "../../utils";
+import { initBoard, getInitKingPositions } from "../../utils/initBoard";
+import { King } from "../figures/King";
 
 export class ChessEngine {
 	private gameMode: 'white' | 'black';
 	private board: Cell[];
+	private blackKing: Figure;
+	private whiteKing: Figure;
 
 	constructor(gameMode: 'white' | 'black') {
+		const kings = getInitKingPositions();
     this.board = initBoard(gameMode);
 		this.gameMode = gameMode;
+		this.blackKing = kings.black;
+		this.whiteKing = kings.white;
   }
 
 	getBoard = () => {
@@ -19,12 +27,15 @@ export class ChessEngine {
 	}
 
 	getPossibleMoves = (figure: Figure) => {
+		if (this.isCheck())
+			if (figure.name === "king") figure = figure.color === "white" ? this.whiteKing : this.blackKing;
 		return figure.getPossibleMoves(this.gameMode, this.board);
 	}
 
 	makeMove = (move: Move) => {
 		if (this.isCastle(move)) this.makeCastle(move);
 		else this.makeStandartMove(move);
+		this.trackKing(move);
 	}
 
 	private makeStandartMove = (move: Move) => {
@@ -94,5 +105,38 @@ export class ChessEngine {
 
 		this.makeStandartMove(kingMove);
 		this.makeStandartMove(rookMove);
+	}
+
+	private trackKing = (move: Move) => {
+		const {figure} = move;
+		if (figure.name !== "king") return;
+		if (figure.color === "white") this.whiteKing = {...figure, position: move.to};
+		else this.blackKing = {...figure, position: move.to};
+	}
+
+	private isCheck = () => {
+		const { x: blackX, y: blackY } = convertFromBoardIndex(this.blackKing.position, this.gameMode);
+		const { x: whiteX, y: whiteY } = convertFromBoardIndex(this.whiteKing.position, this.gameMode);
+
+		const blackKingSafe = isKingSafeAtPosition(
+			this.gameMode,
+			"black",
+			blackX,
+			blackY,
+			this.board
+		);
+
+		const whiteKingSafe = isKingSafeAtPosition(
+			this.gameMode,
+			"white",
+			whiteX,
+			whiteY,
+			this.board
+		);
+
+		if (!whiteKingSafe) (this.whiteKing as King).wasCheck();
+		if (!blackKingSafe) (this.blackKing as King).wasCheck();
+
+		return !whiteKingSafe && blackKingSafe;
 	}
 }

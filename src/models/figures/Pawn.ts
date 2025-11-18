@@ -36,8 +36,7 @@ export class Pawn extends BaseFigure {
 		const possibleAttackMoves = this.getAttackMoves(gameMode, board, pawnAttackDirections);
 		const possibleMoves = new Set<string>();
 
-		
-		const {x, y} = convertFromBoardIndex(this.x, this.y, gameMode);
+		const {x, y} = convertFromBoardIndex(this.position, gameMode);
 
 		possibleMoves.add(convertToBoardIndex(x, y + pawnMoveDireation.dy, gameMode));
 		if (y == pawnStartPosistion) 
@@ -55,7 +54,7 @@ export class Pawn extends BaseFigure {
 		attackDirection: Direction[]
 	) {
 		const possibleAttackMoves = new Set<string>();
-		const {x, y} = convertFromBoardIndex(this.x, this.y, gameMode);
+		const {x, y} = convertFromBoardIndex(this.position, gameMode);
 
 		attackDirection.map(d => {
 			const index = getListIndexByCoordinates(x + d.dx, y + d.dy);

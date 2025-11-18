@@ -58,7 +58,7 @@ export abstract class BaseFigure implements Figure {
   }
 
   getPossibleMoves(gameMode: "black"|"white", board: Cell[]) {
-		const { x, y } = convertFromBoardIndex(this.x, this.y, gameMode);
+		const { x, y } = convertFromBoardIndex(this.position, gameMode);
 		const possibleMoves = new Set<string>();
 		const possibleAttackMoves = new Set<string>();
 
