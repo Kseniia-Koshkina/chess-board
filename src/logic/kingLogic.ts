@@ -1,16 +1,16 @@
-import { 
-	diagonalDirections, 
-	lineDirections 
+import {
+	diagonalDirections,
+	lineDirections
 } from "../constants";
 import { Cell } from "../models";
 import { checkForKnightAttack, checkForLineAttacks, checkForPawnAttack } from "../utils/checkForAttack";
 
 export const isKingSafeAtPosition = (
-  gameMode: "white" | "black",
-  kingColor: "white" | "black",
-  x: number,
-  y: number,
-  board: Cell[]
+	gameMode: "white" | "black",
+	kingColor: "white" | "black",
+	x: number,
+	y: number,
+	board: Cell[]
 ): boolean => {
 	if (
 		checkForLineAttacks(
@@ -45,7 +45,7 @@ export const isKingSafeAtPosition = (
 
 	if (
 		checkForPawnAttack(
-			x, 
+			x,
 			y,
 			kingColor,
 			board,
@@ -53,5 +53,5 @@ export const isKingSafeAtPosition = (
 		)
 	) return false;
 
-  return true;
+	return true;
 }

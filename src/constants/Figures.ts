@@ -10,8 +10,8 @@ export const figures: Figure[] = [
 	// new Rook("b", "8", "black"),
 	new King("e", "1", "white"),
 	new King("e", "8", "black"),
-	new Rook("a", "1","white"),
-	new Rook("h", "1","white"),
+	new Rook("a", "1", "white"),
+	new Rook("h", "1", "white"),
 	new Pawn("b", "7", "white"),
 	new Pawn("g", "2", "black")
 ];

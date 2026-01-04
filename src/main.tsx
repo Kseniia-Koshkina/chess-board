@@ -4,7 +4,7 @@ import "./styles/ChessBoardStyles.css"
 import Board from './components/Board.tsx'
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <Board/>
-  </StrictMode>,
+	<StrictMode>
+		<Board />
+	</StrictMode>,
 )

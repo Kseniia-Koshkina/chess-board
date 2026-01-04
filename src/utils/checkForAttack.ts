@@ -13,11 +13,11 @@ export const checkForLineAttacks = (
 	for (const d of lineDirections) {
 		let i = 1;
 		while (true) {
-			const index = getListIndexByCoordinates(x + d.dx*i, y + d.dy*i);
+			const index = getListIndexByCoordinates(x + d.dx * i, y + d.dy * i);
 			if (index === -1) break;
-			if (board[index].figure 
+			if (board[index].figure
 				&& board[index].figure.name !== "king") {
-				if (board[index].figure.color !== color 
+				if (board[index].figure.color !== color
 					&& possibleAttackFigures.includes(board[index].figure.name)
 				)
 					return true;
@@ -31,16 +31,16 @@ export const checkForLineAttacks = (
 }
 
 export const checkForKnightAttack = (
-	x: number, 
-	y: number, 
-	color: 'white'|'black', 
+	x: number,
+	y: number,
+	color: 'white' | 'black',
 	board: Cell[]
 ): boolean => {
 	for (const d of knightDirections) {
-		const index = getListIndexByCoordinates(x+d.dx, y+d.dy);
+		const index = getListIndexByCoordinates(x + d.dx, y + d.dy);
 		if (
-			index !== -1 
-			&& board[index]?.figure?.color !== color 
+			index !== -1
+			&& board[index]?.figure?.color !== color
 			&& board[index]?.figure?.name === "knight")
 			return true;
 	};
@@ -51,19 +51,19 @@ export const checkForKnightAttack = (
 export const checkForPawnAttack = (
 	x: number,
 	y: number,
-	color: 'white'|'black',
+	color: 'white' | 'black',
 	board: Cell[],
-	gameMode: 'white'|'black'
+	gameMode: 'white' | 'black'
 ) => {
-	const pawnDirections = gameMode === color 
-		? yourPawnAttackDirections 
+	const pawnDirections = gameMode === color
+		? yourPawnAttackDirections
 		: opponentPawnAttackDirections;
 
 	for (const d of pawnDirections) {
-		const index = getListIndexByCoordinates(x+d.dx, y+d.dy);
-		if (index !== -1 
-			&& board[index].figure?.color !== color 
-			&& board[index].figure?.name === "pawn") 
+		const index = getListIndexByCoordinates(x + d.dx, y + d.dy);
+		if (index !== -1
+			&& board[index].figure?.color !== color
+			&& board[index].figure?.name === "pawn")
 			return true;
 		return false;
 	}

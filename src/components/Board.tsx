@@ -2,14 +2,14 @@ import useChessEngine from "../hooks/ChessEngineHook";
 import { Cell } from "../models";
 import BoardCell from "./BoardCell";
 
-const gameMode  = "white";
+const gameMode = "white";
 
 const Board = () => {
-	const { 
-		board, 
-		possibleMoves, 
+	const {
+		board,
+		possibleMoves,
 		possibleAttackMoves,
-		handleInteraction 
+		handleInteraction
 	} = useChessEngine(gameMode);
 
 	return (

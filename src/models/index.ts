@@ -1,63 +1,63 @@
-import { 
-	convertFromBoardIndex, 
-	convertToBoardIndex, 
-	getListIndexByCoordinates 
+import {
+	convertFromBoardIndex,
+	convertToBoardIndex,
+	getListIndexByCoordinates
 } from "../utils";
 
-export type xAxis = 'a'|'b'|'c'|'d'|'e'|'f'|'g'|'h'
-export type yAxis = '1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'
+export type xAxis = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h'
+export type yAxis = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8'
 
 export interface Figure {
-  name: string,
-  x: xAxis,
-  y: yAxis,
+	name: string,
+	x: xAxis,
+	y: yAxis,
 	position: string,
-  moveMade: boolean,
-  color: "black"|"white",
-  getPossibleMoves(gameMode: "black"|"white", board: Cell[]): {
+	moveMade: boolean,
+	color: "black" | "white",
+	getPossibleMoves(gameMode: "black" | "white", board: Cell[]): {
 		possibleMoves: Set<string>,
 		possibleAttackMoves: Set<string>
 	},
-  changePosition(x: xAxis, y: yAxis): void,
-  moveWasMade(): void
+	changePosition(x: xAxis, y: yAxis): void,
+	moveWasMade(): void
 }
 
 export abstract class BaseFigure implements Figure {
-  name: string;
-  x: xAxis;
-  y: yAxis;
+	name: string;
+	x: xAxis;
+	y: yAxis;
 	position: string;
-  moveMade: boolean;
-  color: "black"|"white";
-	moveDirections: Direction[];  
+	moveMade: boolean;
+	color: "black" | "white";
+	moveDirections: Direction[];
 
-  constructor (
-		name: string, 
-		x: xAxis, 
-		y: yAxis, 
-		color:  "black"|"white", 
+	constructor(
+		name: string,
+		x: xAxis,
+		y: yAxis,
+		color: "black" | "white",
 		moveDirection: Direction[]
 	) {
-    this.name = name;
-    this.x = x;
-    this.y = y;
-    this.color = color;
-    this.moveMade = false;
+		this.name = name;
+		this.x = x;
+		this.y = y;
+		this.color = color;
+		this.moveMade = false;
 		this.position = x + y;
 		this.moveDirections = moveDirection
-  }
+	}
 
-  changePosition(x: xAxis, y: yAxis) {
-    this.x = x;
-    this.y = y;
+	changePosition(x: xAxis, y: yAxis) {
+		this.x = x;
+		this.y = y;
 		this.position = x + y;
-  }
+	}
 
-  moveWasMade() {
-    this.moveMade = true;
-  }
+	moveWasMade() {
+		this.moveMade = true;
+	}
 
-  getPossibleMoves(gameMode: "black"|"white", board: Cell[]) {
+	getPossibleMoves(gameMode: "black" | "white", board: Cell[]) {
 		const { x, y } = convertFromBoardIndex(this.position, gameMode);
 		const possibleMoves = new Set<string>();
 		const possibleAttackMoves = new Set<string>();
@@ -65,12 +65,12 @@ export abstract class BaseFigure implements Figure {
 		this.moveDirections.map(d => {
 			let i = 1;
 			while (true) {
-				const index = getListIndexByCoordinates(x + d.dx*i, y + d.dy*i);
-				const move = convertToBoardIndex(x + d.dx*i, y + d.dy*i, gameMode);
+				const index = getListIndexByCoordinates(x + d.dx * i, y + d.dy * i);
+				const move = convertToBoardIndex(x + d.dx * i, y + d.dy * i, gameMode);
 
 				if (index === -1) break;
 				if (board[index].figure) {
-					if (board[index].figure.color !== this.color) 
+					if (board[index].figure.color !== this.color)
 						possibleAttackMoves.add(move);
 					break;
 				};
@@ -88,20 +88,20 @@ export abstract class BaseFigure implements Figure {
 
 
 export interface Cell {
-  position: string,
-  color: string
-  figure?: Figure
+	position: string,
+	color: string
+	figure?: Figure
 }
 
 export interface Move {
-  from: string,
-  to: string,
+	from: string,
+	to: string,
 	figure: Figure
 }
 
 export interface Promotion {
-  position?: string,
-  figure?: Figure
+	position?: string,
+	figure?: Figure
 }
 
 export interface Direction {

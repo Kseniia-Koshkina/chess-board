@@ -2,7 +2,6 @@ import { convertFromBoardIndex, convertToBoardIndex, getListIndexByCoordinates }
 import { diagonalDirections, knightDirections, lineDirections, opponentPawnAttackDirections, yourPawnAttackDirections } from "../constants";
 import { Direction, Cell } from "../models";
 
-
 export const getAttack = (
 	kingPosition: string,
 	kingColor: 'white'|'black',
@@ -37,7 +36,6 @@ const getPawnAttack = (
 			&& board[index].figure?.name === "pawn") 
 			return new Set<string>(board[index].position);
 	}
-
 	return;
 }
 
@@ -122,6 +120,5 @@ const getLineAttack = (
 			i++;
 		}
 	}
-
 	return;
 }

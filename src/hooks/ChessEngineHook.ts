@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { ChessEngine } from "../models/engine/ChessEngine";
 import { Cell, Figure } from "../models";
 
-const useChessEngine = (gameMode: "white"|"black") => {
+const useChessEngine = (gameMode: "white" | "black") => {
 	const engine = useMemo(() => new ChessEngine(gameMode), [gameMode]);
 	const defaultSet = new Set<string>;
 
@@ -12,7 +12,7 @@ const useChessEngine = (gameMode: "white"|"black") => {
 	const [possibleAttackMoves, setPossibleAttackMoves] = useState<Set<string>>(defaultSet);
 
 	const handleInteraction = (
-		cellPosition: string, 
+		cellPosition: string,
 		figure?: Figure
 	) => {
 		if (!selectedFigure) {
@@ -21,9 +21,9 @@ const useChessEngine = (gameMode: "white"|"black") => {
 		}
 
 		if (figure) {
-			if (possibleAttackMoves.has(figure.position)) 
+			if (possibleAttackMoves.has(figure.position))
 				makeMove(selectedFigure, cellPosition);
-			else 
+			else
 				selectFigureToMove(figure);
 			return;
 		}
@@ -38,7 +38,7 @@ const useChessEngine = (gameMode: "white"|"black") => {
 
 	const selectFigureToMove = (figure?: Figure) => {
 		if (!figure) return;
-		const {possibleMoves, possibleAttackMoves} = engine.getPossibleMoves(figure)
+		const { possibleMoves, possibleAttackMoves } = engine.getPossibleMoves(figure)
 		setSelectedFigure(figure);
 		setPossibleMoves(possibleMoves);
 		setPossibleAttackMoves(possibleAttackMoves);
@@ -51,7 +51,7 @@ const useChessEngine = (gameMode: "white"|"black") => {
 	}
 
 	const makeMove = (
-		figure: Figure, 
+		figure: Figure,
 		cellPosition: string
 	) => {
 		if (!figure) return;
