@@ -10,6 +10,7 @@ const useChessEngine = (gameMode: "white" | "black") => {
 	const [selectedFigure, setSelectedFigure] = useState<Figure | undefined>();
 	const [possibleMoves, setPossibleMoves] = useState<Set<string>>(defaultSet);
 	const [possibleAttackMoves, setPossibleAttackMoves] = useState<Set<string>>(defaultSet);
+	const [isPromotion, setIsPromotion] = useState<boolean>(false);
 
 	const handleInteraction = (
 		cellPosition: string,
@@ -20,9 +21,14 @@ const useChessEngine = (gameMode: "white" | "black") => {
 			return;
 		}
 
+		if (isPromotion) return;
+
 		if (figure) {
-			if (possibleAttackMoves.has(figure.position))
+			if (possibleAttackMoves.has(figure.position)) {
 				makeMove(selectedFigure, cellPosition);
+				setIsPromotion(engine.getPromotionStatus());
+				console.log("status",engine.getPromotionStatus());
+			}
 			else
 				selectFigureToMove(figure);
 			return;
@@ -30,11 +36,21 @@ const useChessEngine = (gameMode: "white" | "black") => {
 
 		if (possibleMoves.has(cellPosition)) {
 			makeMove(selectedFigure, cellPosition);
+			setIsPromotion(engine.getPromotionStatus());
 			return;
 		}
 
 		cleanSelectedFigure();
 	}
+
+	const makePromotion = (figureName: string) => {
+		console.log(figureName)
+
+		engine.makePromotion(figureName);
+		setBoard(engine.getBoard());
+		setIsPromotion(false);
+	}
+
 
 	const selectFigureToMove = (figure?: Figure) => {
 		if (!figure) return;
@@ -71,7 +87,9 @@ const useChessEngine = (gameMode: "white" | "black") => {
 		board,
 		possibleMoves,
 		possibleAttackMoves,
-		handleInteraction
+		isPromotion,
+		handleInteraction,
+		makePromotion
 	};
 }
 

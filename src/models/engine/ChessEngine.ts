@@ -3,22 +3,21 @@ import { isKingSafeAtPosition } from "../../logic/kingLogic";
 import { convertFromBoardIndex, getBoardListIndex, stringSetIntersection } from "../../utils";
 import { getAttack } from "../../utils/getLineAttack";
 import { initBoard, getInitKingPositions } from "../../utils/initBoard";
+import { Bishop } from "../figures/Bishop";
 import { King } from "../figures/King";
+import { Knight } from "../figures/Knight";
+import { Queen } from "../figures/Queen";
+import { Rook } from "../figures/Rook";
 
-/*
-what is left:
-
-- add pawn promotion handler
-*/
 export class ChessEngine {
 	private gameMode: 'white' | 'black';
 	private board: Cell[];
 	private blackKing: Figure;
 	private whiteKing: Figure;
-	private kingUnderCheck: {
-		position: string,
-		color: 'white' | 'black'
-	} = { position: "", color: "black" };
+	private kingUnderCheck: Figure | undefined;
+	private promotionInProgress: boolean = false;
+	private promotionPosition: string = '';
+	private promotionColor: 'white' | 'black' = 'white';
 
 	constructor(gameMode: 'white' | 'black') {
 		const kings = getInitKingPositions();
@@ -28,15 +27,20 @@ export class ChessEngine {
 		this.whiteKing = kings.white;
 	}
 
+	getPromotionStatus = () => {
+		return this.promotionInProgress;
+	}
+
 	getBoard = () => {
 		return this.board;
 	}
 
-	printBoard = () => {
-		console.log(this.board);
-	}
-
 	getPossibleMoves = (figure: Figure) => {
+		if (this.promotionInProgress) return {
+			possibleMoves: new Set<string>(),
+			possibleAttackMoves: new Set<string>()
+		};
+
 		if (this.isCheck()) {
 			if (figure.name === "king") {
 				figure = figure.color === "white"
@@ -46,7 +50,7 @@ export class ChessEngine {
 				return (figure as King).getPossibleMoves(this.gameMode, this.board);
 			}
 
-			if (figure.color !== this.kingUnderCheck.color)
+			if (figure.color !== this.kingUnderCheck?.color)
 				return figure.getPossibleMoves(this.gameMode, this.board);
 
 			const attackLine = getAttack(
@@ -78,9 +82,54 @@ export class ChessEngine {
 	}
 
 	makeMove = (move: Move) => {
+		if (this.isPromotion(move)) {
+			this.promotionInProgress = true;
+			this.promotionPosition = move.to;
+			this.promotionColor = move.figure.color;
+		}
+
 		if (this.isCastle(move)) this.makeCastle(move);
 		else this.makeStandartMove(move);
 		this.trackKing(move);
+	}
+
+	makePromotion = (figureName: string) => {
+		if (!this.promotionInProgress) return;
+
+		const cellIndex = getBoardListIndex(this.promotionPosition, this.gameMode);
+		const figure = this.createPromotionFigure(figureName);
+
+		this.board[cellIndex].figure = figure;
+		this.promotionInProgress = false;
+	}
+
+	private createPromotionFigure = (figureName: string) => {
+		switch (figureName) {
+			case "queen": {
+				return new Queen(
+					this.promotionPosition[0] as xAxis, 
+					this.promotionPosition[1] as yAxis, 
+					this.promotionColor);
+			}
+			case "bishop": {
+				return new Bishop(
+					this.promotionPosition[0] as xAxis, 
+					this.promotionPosition[1] as yAxis, 
+					this.promotionColor);
+			}
+			case "rook": {
+				return new Rook(
+					this.promotionPosition[0] as xAxis, 
+					this.promotionPosition[1] as yAxis, 
+					this.promotionColor);
+			}
+			case "knight": {
+				return new Knight(
+					this.promotionPosition[0] as xAxis, 
+					this.promotionPosition[1] as yAxis, 
+					this.promotionColor);
+			}
+		}
 	}
 
 	private makeStandartMove = (move: Move) => {
@@ -100,6 +149,13 @@ export class ChessEngine {
 			? new Set(["c1", "g1"])
 			: new Set(["c8", "g8"]);
 		if (castleTo.has(move.to)) return true;
+		return false;
+	}
+
+	private isPromotion = (move: Move): boolean => {
+		const endOfBoardRanks = move.figure.color === "white" ? "8" : "1";
+		const isPawn = move.figure.name === "pawn";
+		if (isPawn && move.to[1] === endOfBoardRanks) return true;
 		return false;
 	}
 
@@ -182,17 +238,11 @@ export class ChessEngine {
 		);
 
 		if (!whiteKingSafe) {
-			this.kingUnderCheck = {
-				position: this.whiteKing.position,
-				color: 'white'
-			};
+			this.kingUnderCheck = this.whiteKing;
 			(this.whiteKing as King).wasCheck();
 		}
 		if (!blackKingSafe) {
-			this.kingUnderCheck = {
-				position: this.blackKing.position,
-				color: 'black'
-			};
+			this.kingUnderCheck = this.blackKing;
 			(this.blackKing as King).wasCheck();
 		}
 

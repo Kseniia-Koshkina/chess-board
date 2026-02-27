@@ -17,7 +17,7 @@ export const initBoard = (gameMode: "white" | "black") => {
 			const figureOnPosition = figures.find(figure => {
 				const { x, y } = convertFromBoardIndex(figure.position, gameMode);
 				if (x == k && y == i) return figure;
-			})
+			});
 			cells.push({
 				position: xAxis[k] + yAxis[i],
 				color: color,

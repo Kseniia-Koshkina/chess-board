@@ -9,7 +9,9 @@ const Board = () => {
 		board,
 		possibleMoves,
 		possibleAttackMoves,
-		handleInteraction
+		isPromotion,
+		handleInteraction,
+		makePromotion
 	} = useChessEngine(gameMode);
 
 	return (
@@ -27,6 +29,14 @@ const Board = () => {
 					)
 				})}
 			</div>
+			{isPromotion && 
+				<div>
+					<button onClick={() => makePromotion("queen")}>Queen</button>
+					<button onClick={() => makePromotion("bishop")}>Bishop</button>
+					<button onClick={() => makePromotion("rook")}>Rook</button>
+					<button onClick={() => makePromotion("knight")}>Knight</button>
+				</div>
+			}
 		</>
 	)
 }
