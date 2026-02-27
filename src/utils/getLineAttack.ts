@@ -1,5 +1,15 @@
-import { convertFromBoardIndex, convertToBoardIndex, getListIndexByCoordinates } from ".";
-import { diagonalDirections, knightDirections, lineDirections, opponentPawnAttackDirections, yourPawnAttackDirections } from "../constants";
+import { 
+	convertFromBoardIndex, 
+	convertToBoardIndex, 
+	getListIndexByCoordinates 
+} from ".";
+import { 
+	diagonalDirections, 
+	knightDirections, 
+	lineDirections, 
+	opponentPawnAttackDirections, 
+	yourPawnAttackDirections 
+} from "../constants";
 import { Direction, Cell } from "../models";
 
 export const getAttack = (

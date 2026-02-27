@@ -3,7 +3,11 @@ import {
 	lineDirections
 } from "../constants";
 import { Cell } from "../models";
-import { checkForKnightAttack, checkForLineAttacks, checkForPawnAttack } from "../utils/checkForAttack";
+import { 
+	checkForKnightAttack, 
+	checkForLineAttacks, 
+	checkForPawnAttack 
+} from "../utils/checkForAttack";
 
 export const isKingSafeAtPosition = (
 	gameMode: "white" | "black",

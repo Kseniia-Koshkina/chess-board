@@ -1,4 +1,4 @@
-import { Cell, Figure, Move, xAxis, yAxis } from "..";
+import { Cell, Check, Figure, Move, xAxis, yAxis } from "..";
 import { isKingSafeAtPosition } from "../../logic/kingLogic";
 import { convertFromBoardIndex, getBoardListIndex, stringSetIntersection } from "../../utils";
 import { getAttack } from "../../utils/getLineAttack";
@@ -14,7 +14,7 @@ export class ChessEngine {
 	private board: Cell[];
 	private blackKing: Figure;
 	private whiteKing: Figure;
-	private kingUnderCheck: Figure | undefined;
+	private check: Check | null = null;
 	private promotionInProgress: boolean = false;
 	private promotionPosition: string = '';
 	private promotionColor: 'white' | 'black' = 'white';
@@ -42,23 +42,14 @@ export class ChessEngine {
 		};
 
 		if (this.isCheck()) {
-			if (figure.name === "king") {
-				figure = figure.color === "white"
-					? this.whiteKing
-					: this.blackKing;
-				console.log(figure)
-				return (figure as King).getPossibleMoves(this.gameMode, this.board);
-			}
+			// need to calculate possible moves only for king and figures that can block or kill attacker
+			if (figure == this.check?.king)
+				return this.check.king.getPossibleMoves(this.gameMode, this.board);
 
-			if (figure.color !== this.kingUnderCheck?.color)
+			if (figure.color !== this.check?.king?.color)
 				return figure.getPossibleMoves(this.gameMode, this.board);
 
-			const attackLine = getAttack(
-				this.kingUnderCheck.position,
-				this.kingUnderCheck.color,
-				this.board,
-				this.gameMode
-			)
+			const attackLine = this.check?.attackLine;
 
 			const { possibleMoves, possibleAttackMoves } = figure.getPossibleMoves(
 				this.gameMode,
@@ -238,11 +229,27 @@ export class ChessEngine {
 		);
 
 		if (!whiteKingSafe) {
-			this.kingUnderCheck = this.whiteKing;
+			this.check = {
+				king: this.whiteKing,
+				attackLine: getAttack(
+					this.whiteKing.position,
+					this.whiteKing.color,
+					this.board,
+					this.gameMode
+				)
+			};
 			(this.whiteKing as King).wasCheck();
 		}
 		if (!blackKingSafe) {
-			this.kingUnderCheck = this.blackKing;
+			this.check = {
+				king: this.blackKing,
+				attackLine: getAttack(
+					this.blackKing.position,
+					this.blackKing.color,
+					this.board,
+					this.gameMode
+				)
+			};
 			(this.blackKing as King).wasCheck();
 		}
 

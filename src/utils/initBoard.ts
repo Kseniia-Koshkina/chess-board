@@ -1,5 +1,10 @@
 import { convertFromBoardIndex } from ".";
-import { xAxisBlack, xAxisWhite, yAxisBlack, yAxisWhite } from "../constants";
+import { 
+	xAxisBlack, 
+	xAxisWhite, 
+	yAxisBlack, 
+	yAxisWhite 
+} from "../constants";
 import { figures } from "../constants/Figures";
 import { Cell, Figure } from "../models";
 

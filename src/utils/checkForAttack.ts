@@ -1,5 +1,9 @@
 import { getListIndexByCoordinates } from ".";
-import { knightDirections, opponentPawnAttackDirections, yourPawnAttackDirections } from "../constants";
+import { 
+	knightDirections, 
+	opponentPawnAttackDirections, 
+	yourPawnAttackDirections 
+} from "../constants";
 import { Cell, Direction } from "../models";
 
 export const checkForLineAttacks = (

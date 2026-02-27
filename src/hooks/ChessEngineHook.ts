@@ -27,7 +27,6 @@ const useChessEngine = (gameMode: "white" | "black") => {
 			if (possibleAttackMoves.has(figure.position)) {
 				makeMove(selectedFigure, cellPosition);
 				setIsPromotion(engine.getPromotionStatus());
-				console.log("status",engine.getPromotionStatus());
 			}
 			else
 				selectFigureToMove(figure);
@@ -42,15 +41,6 @@ const useChessEngine = (gameMode: "white" | "black") => {
 
 		cleanSelectedFigure();
 	}
-
-	const makePromotion = (figureName: string) => {
-		console.log(figureName)
-
-		engine.makePromotion(figureName);
-		setBoard(engine.getBoard());
-		setIsPromotion(false);
-	}
-
 
 	const selectFigureToMove = (figure?: Figure) => {
 		if (!figure) return;
@@ -81,6 +71,12 @@ const useChessEngine = (gameMode: "white" | "black") => {
 		engine.makeMove(move);
 		setBoard(engine.getBoard());
 		cleanSelectedFigure();
+	}
+
+	const makePromotion = (figureName: string) => {
+		engine.makePromotion(figureName);
+		setBoard(engine.getBoard());
+		setIsPromotion(false);
 	}
 
 	return {

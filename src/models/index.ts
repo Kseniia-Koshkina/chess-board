@@ -86,7 +86,6 @@ export abstract class BaseFigure implements Figure {
 	}
 }
 
-
 export interface Cell {
 	position: string,
 	color: string
@@ -99,12 +98,12 @@ export interface Move {
 	figure: Figure
 }
 
-export interface Promotion {
-	position?: string,
-	figure?: Figure
-}
-
 export interface Direction {
 	dx: number;
 	dy: number;
+}
+
+export interface Check {
+	king: Figure | undefined;
+	attackLine: Set<string> | undefined;
 }
