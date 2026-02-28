@@ -1,10 +1,21 @@
-import { Cell, Check, Figure, Move, xAxis, yAxis } from "..";
+import { 
+	Cell, 
+	Check, 
+	Figure, 
+	Move, 
+	Promotion, 
+	xAxis, 
+	yAxis 
+} from "..";
 import { isKingSafeAtPosition } from "../../logic/kingLogic";
-import { convertFromBoardIndex, getBoardListIndex, stringSetIntersection } from "../../utils";
+import { 
+	convertFromBoardIndex, 
+	getBoardListIndex, 
+	stringSetIntersection 
+} from "../../utils";
 import { getAttack } from "../../utils/getLineAttack";
 import { initBoard, getInitKingPositions } from "../../utils/initBoard";
 import { Bishop } from "../figures/Bishop";
-import { King } from "../figures/King";
 import { Knight } from "../figures/Knight";
 import { Queen } from "../figures/Queen";
 import { Rook } from "../figures/Rook";
@@ -15,9 +26,7 @@ export class ChessEngine {
 	private blackKing: Figure;
 	private whiteKing: Figure;
 	private check: Check | null = null;
-	private promotionInProgress: boolean = false;
-	private promotionPosition: string = '';
-	private promotionColor: 'white' | 'black' = 'white';
+	private promotion: Promotion | null = null;
 
 	constructor(gameMode: 'white' | 'black') {
 		const kings = getInitKingPositions();
@@ -28,7 +37,7 @@ export class ChessEngine {
 	}
 
 	getPromotionStatus = () => {
-		return this.promotionInProgress;
+		return this.promotion ? true : false;
 	}
 
 	getBoard = () => {
@@ -36,13 +45,12 @@ export class ChessEngine {
 	}
 
 	getPossibleMoves = (figure: Figure) => {
-		if (this.promotionInProgress) return {
+		if (this.promotion) return {
 			possibleMoves: new Set<string>(),
 			possibleAttackMoves: new Set<string>()
 		};
 
-		if (this.isCheck()) {
-			// need to calculate possible moves only for king and figures that can block or kill attacker
+		if (this.check) {
 			if (figure == this.check?.king)
 				return this.check.king.getPossibleMoves(this.gameMode, this.board);
 
@@ -74,51 +82,58 @@ export class ChessEngine {
 
 	makeMove = (move: Move) => {
 		if (this.isPromotion(move)) {
-			this.promotionInProgress = true;
-			this.promotionPosition = move.to;
-			this.promotionColor = move.figure.color;
+			this.promotion = {
+				position: move.to,
+				color: move.figure.color
+			};
 		}
 
 		if (this.isCastle(move)) this.makeCastle(move);
 		else this.makeStandartMove(move);
 		this.trackKing(move);
+
+		const king = move.figure.color === "white" 
+			? this.blackKing 
+			: this.whiteKing;
+		this.trackCheck(king);
 	}
 
 	makePromotion = (figureName: string) => {
-		if (!this.promotionInProgress) return;
+		if (!this.promotion) return;
 
-		const cellIndex = getBoardListIndex(this.promotionPosition, this.gameMode);
+		const cellIndex = getBoardListIndex(this.promotion.position, this.gameMode);
 		const figure = this.createPromotionFigure(figureName);
 
 		this.board[cellIndex].figure = figure;
-		this.promotionInProgress = false;
+		this.promotion = null;
 	}
 
 	private createPromotionFigure = (figureName: string) => {
+		if (!this.promotion) return;
 		switch (figureName) {
 			case "queen": {
 				return new Queen(
-					this.promotionPosition[0] as xAxis, 
-					this.promotionPosition[1] as yAxis, 
-					this.promotionColor);
+					this.promotion.position[0] as xAxis, 
+					this.promotion.position[1] as yAxis, 
+					this.promotion.color);
 			}
 			case "bishop": {
 				return new Bishop(
-					this.promotionPosition[0] as xAxis, 
-					this.promotionPosition[1] as yAxis, 
-					this.promotionColor);
+					this.promotion.position[0] as xAxis, 
+					this.promotion.position[1] as yAxis, 
+					this.promotion.color);
 			}
 			case "rook": {
 				return new Rook(
-					this.promotionPosition[0] as xAxis, 
-					this.promotionPosition[1] as yAxis, 
-					this.promotionColor);
+					this.promotion.position[0] as xAxis, 
+					this.promotion.position[1] as yAxis, 
+					this.promotion.color);
 			}
 			case "knight": {
 				return new Knight(
-					this.promotionPosition[0] as xAxis, 
-					this.promotionPosition[1] as yAxis, 
-					this.promotionColor);
+					this.promotion.position[0] as xAxis, 
+					this.promotion.position[1] as yAxis, 
+					this.promotion.color);
 			}
 		}
 	}
@@ -208,39 +223,18 @@ export class ChessEngine {
 		else this.blackKing = figure;
 	}
 
-	private isCheck = () => {
-		const { x: blackX, y: blackY } = convertFromBoardIndex(this.blackKing.position, this.gameMode);
-		const { x: whiteX, y: whiteY } = convertFromBoardIndex(this.whiteKing.position, this.gameMode);
+	private trackCheck = (king: Figure) => {
+		const { x, y } = convertFromBoardIndex(this.blackKing.position, this.gameMode);
 
-		const blackKingSafe = isKingSafeAtPosition(
+		const kingUnderAttack = !isKingSafeAtPosition(
 			this.gameMode,
-			"black",
-			blackX,
-			blackY,
+			king.color,
+			x,
+			y,
 			this.board
 		);
 
-		const whiteKingSafe = isKingSafeAtPosition(
-			this.gameMode,
-			"white",
-			whiteX,
-			whiteY,
-			this.board
-		);
-
-		if (!whiteKingSafe) {
-			this.check = {
-				king: this.whiteKing,
-				attackLine: getAttack(
-					this.whiteKing.position,
-					this.whiteKing.color,
-					this.board,
-					this.gameMode
-				)
-			};
-			(this.whiteKing as King).wasCheck();
-		}
-		if (!blackKingSafe) {
+		if (kingUnderAttack)
 			this.check = {
 				king: this.blackKing,
 				attackLine: getAttack(
@@ -250,9 +244,7 @@ export class ChessEngine {
 					this.gameMode
 				)
 			};
-			(this.blackKing as King).wasCheck();
-		}
 
-		return !(whiteKingSafe && blackKingSafe);
+		else this.check = null;
 	}
 }

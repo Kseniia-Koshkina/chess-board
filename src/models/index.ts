@@ -107,3 +107,8 @@ export interface Check {
 	king: Figure | undefined;
 	attackLine: Set<string> | undefined;
 }
+
+export interface Promotion {
+	position: string;
+	color: "white" | "black";
+}
