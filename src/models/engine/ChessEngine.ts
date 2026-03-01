@@ -7,7 +7,7 @@ import {
 	xAxis, 
 	yAxis 
 } from "..";
-import { isKingSafeAtPosition } from "../../logic/kingLogic";
+import { canProtectKing, isKingSafeAtPosition } from "../../logic/kingLogic";
 import { 
 	convertFromBoardIndex, 
 	getBoardListIndex, 
@@ -50,11 +50,11 @@ export class ChessEngine {
 			possibleAttackMoves: new Set<string>()
 		};
 
-		if (this.check) {
+		if (this.check != null) {
 			if (figure == this.check?.king)
 				return this.check.king.getPossibleMoves(this.gameMode, this.board);
 
-			if (figure.color !== this.check?.king?.color)
+			if (figure.color !== this.check.king.color)
 				return figure.getPossibleMoves(this.gameMode, this.board);
 
 			const attackLine = this.check?.attackLine;
@@ -102,38 +102,42 @@ export class ChessEngine {
 		if (!this.promotion) return;
 
 		const cellIndex = getBoardListIndex(this.promotion.position, this.gameMode);
-		const figure = this.createPromotionFigure(figureName);
+		const figure = this.createPromotionFigure(figureName, this.promotion);
 
 		this.board[cellIndex].figure = figure;
 		this.promotion = null;
+
+		const king = figure.color === "white" 
+			? this.blackKing 
+			: this.whiteKing;
+		this.trackCheck(king);
 	}
 
-	private createPromotionFigure = (figureName: string) => {
-		if (!this.promotion) return;
+	private createPromotionFigure = (figureName: string, promotion: Promotion) => {
 		switch (figureName) {
-			case "queen": {
-				return new Queen(
-					this.promotion.position[0] as xAxis, 
-					this.promotion.position[1] as yAxis, 
-					this.promotion.color);
-			}
 			case "bishop": {
 				return new Bishop(
-					this.promotion.position[0] as xAxis, 
-					this.promotion.position[1] as yAxis, 
-					this.promotion.color);
+					promotion.position[0] as xAxis, 
+					promotion.position[1] as yAxis, 
+					promotion.color);
 			}
 			case "rook": {
 				return new Rook(
-					this.promotion.position[0] as xAxis, 
-					this.promotion.position[1] as yAxis, 
-					this.promotion.color);
+					promotion.position[0] as xAxis, 
+					promotion.position[1] as yAxis, 
+					promotion.color);
 			}
 			case "knight": {
 				return new Knight(
-					this.promotion.position[0] as xAxis, 
-					this.promotion.position[1] as yAxis, 
-					this.promotion.color);
+					promotion.position[0] as xAxis, 
+					promotion.position[1] as yAxis, 
+					promotion.color);
+			}
+			default: {
+				return new Queen(
+					promotion.position[0] as xAxis, 
+					promotion.position[1] as yAxis, 
+					promotion.color);
 			}
 		}
 	}
@@ -224,7 +228,7 @@ export class ChessEngine {
 	}
 
 	private trackCheck = (king: Figure) => {
-		const { x, y } = convertFromBoardIndex(this.blackKing.position, this.gameMode);
+		const { x, y } = convertFromBoardIndex(king.position, this.gameMode);
 
 		const kingUnderAttack = !isKingSafeAtPosition(
 			this.gameMode,
@@ -234,17 +238,42 @@ export class ChessEngine {
 			this.board
 		);
 
-		if (kingUnderAttack)
+		if (kingUnderAttack) {
 			this.check = {
-				king: this.blackKing,
+				king: king,
 				attackLine: getAttack(
-					this.blackKing.position,
-					this.blackKing.color,
+					king.position,
+					king.color,
 					this.board,
 					this.gameMode
-				)
+				) || new Set<string>()
 			};
 
+			if (this.isCheckmate()) {
+				//
+			}
+		}
+
 		else this.check = null;
+	}
+
+	private isCheckmate = (): boolean => {
+		if (!this.check) return false;
+
+		const kingCanMove = this.check.king
+			.getPossibleMoves(this.gameMode, this.board)
+			.possibleMoves.size > 0;
+		if (kingCanMove) return false;
+
+		const canFigureProtectKing = canProtectKing(
+			this.check.attackLine,
+			this.gameMode,
+			this.check.king,
+			this.board
+		);
+
+		if (canFigureProtectKing) return false;
+
+		return true;
 	}
 }

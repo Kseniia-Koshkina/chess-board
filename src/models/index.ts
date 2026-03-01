@@ -104,8 +104,8 @@ export interface Direction {
 }
 
 export interface Check {
-	king: Figure | undefined;
-	attackLine: Set<string> | undefined;
+	king: Figure;
+	attackLine: Set<string>;
 }
 
 export interface Promotion {

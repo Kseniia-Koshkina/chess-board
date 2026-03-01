@@ -2,12 +2,14 @@ import {
 	diagonalDirections,
 	lineDirections
 } from "../constants";
-import { Cell } from "../models";
+import { Cell, Figure } from "../models";
+import { convertFromBoardIndex } from "../utils";
 import { 
 	checkForKnightAttack, 
 	checkForLineAttacks, 
 	checkForPawnAttack 
 } from "../utils/checkForAttack";
+import { canKnighProtectKing, canPawnProtectKing, canRookOrQueenProtectKing } from "../utils/checkForProtection";
 
 export const isKingSafeAtPosition = (
 	gameMode: "white" | "black",
@@ -58,4 +60,46 @@ export const isKingSafeAtPosition = (
 	) return false;
 
 	return true;
+}
+
+export const canProtectKing = (
+	lineAttack: Set<string>,
+	gameMode: "white" | "black",
+	king: Figure,
+	board: Cell[]
+) => {
+	const lineAttackArray = Array.from(lineAttack);
+
+	for (const position of lineAttackArray) {
+		const { x, y } = convertFromBoardIndex(position, gameMode);
+
+		if (canPawnProtectKing(
+			x,
+			y,
+			king.color,
+			board,
+			gameMode			
+		)) return true;
+
+		if (canRookOrQueenProtectKing(
+			x,
+			y,
+			king.color,
+			board		
+		)) return true;
+
+		if (canKnighProtectKing(
+			x,
+			y,
+			king.color,
+			board
+		)) return true;
+
+		if (canRookOrQueenProtectKing(
+			x,
+			y,
+			king.color,
+			board
+		)) return true;
+	}
 }
