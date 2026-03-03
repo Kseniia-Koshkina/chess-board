@@ -10,7 +10,12 @@ interface Props {
 	) => void
 }
 
-const BoardCell = ({ cell, possibleMoves, possibleAttackMoves, handleInteraction }: Props) => {
+const BoardCell = ({ 
+	cell, 
+	possibleMoves, 
+	possibleAttackMoves, 
+	handleInteraction 
+}: Props) => {
 	let color = cell.color;
 	if (possibleMoves.has(cell.position))
 		color = "blue";
@@ -25,7 +30,7 @@ const BoardCell = ({ cell, possibleMoves, possibleAttackMoves, handleInteraction
 		>
 			{cell.position}
 			{cell.figure
-				? <img src={cell.figure.color + cell.figure.name + ".png"} />
+				? <img src={ cell.figure.color + cell.figure.name + ".png" } />
 				: <></>
 			}
 		</div>

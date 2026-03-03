@@ -2,7 +2,7 @@ import useChessEngine from "../hooks/ChessEngineHook";
 import { Cell } from "../models";
 import BoardCell from "./BoardCell";
 
-const gameMode = "white";
+const gameMode = "white"; // TODO: make it dynamic based on user choice
 
 const Board = () => {
 	const {

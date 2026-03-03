@@ -66,6 +66,7 @@ export class King extends BaseFigure {
 		if (this.moveMade || this.wasUnderAttack) return possiblCastles;
 		const indexForLongCastle = gameMode == "white" ? 7 : 0;
 		const indexForShortCastle = gameMode == "white" ? 0 : 7;
+		const index = gameMode == "white" ? 1 : -1;
 
 		const boardIndexForLongCastle = getListIndexByCoordinates(indexForLongCastle, y);
 		const boardIndexForShortCastle = getListIndexByCoordinates(indexForShortCastle, y);
@@ -77,7 +78,7 @@ export class King extends BaseFigure {
 			y,
 			board,
 			gameMode,
-			1,
+			index,
 			rookForLongCastle
 		)
 
@@ -86,18 +87,18 @@ export class King extends BaseFigure {
 			y,
 			board,
 			gameMode,
-			-1,
+			-1 * index,
 			rookForShortCastle
 		)
 
 		if (canMakeLongCastle) 
 			possiblCastles.add(
-				convertToBoardIndex(x + 2, y, gameMode)
+				convertToBoardIndex(x + 2 * index, y, gameMode)
 			);
 
 		if (canMakeShortCastle) 
 			possiblCastles.add(
-				convertToBoardIndex(x + 2 * -1, y, gameMode)
+				convertToBoardIndex(x + 2 * -1 * index, y, gameMode)
 			);
 
 		return possiblCastles;
