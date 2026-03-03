@@ -16,12 +16,14 @@ import {
 import { getAttack } from "../../utils/getLineAttack";
 import { initBoard, getInitKingPositions } from "../../utils/initBoard";
 import { Bishop } from "../figures/Bishop";
+import { King } from "../figures/King";
 import { Knight } from "../figures/Knight";
 import { Queen } from "../figures/Queen";
 import { Rook } from "../figures/Rook";
 
 export class ChessEngine {
 	private gameMode: 'white' | 'black';
+	private turn: 'white' | 'black' = 'white';
 	private board: Cell[];
 	private blackKing: Figure;
 	private whiteKing: Figure;
@@ -46,6 +48,11 @@ export class ChessEngine {
 
 	getPossibleMoves = (figure: Figure) => {
 		if (this.promotion) return {
+			possibleMoves: new Set<string>(),
+			possibleAttackMoves: new Set<string>()
+		};
+
+		if (figure.color !== this.turn) return {
 			possibleMoves: new Set<string>(),
 			possibleAttackMoves: new Set<string>()
 		};
@@ -81,12 +88,11 @@ export class ChessEngine {
 	}
 
 	makeMove = (move: Move) => {
-		if (this.isPromotion(move)) {
+		if (this.isPromotion(move))
 			this.promotion = {
 				position: move.to,
 				color: move.figure.color
 			};
-		}
 
 		if (this.isCastle(move)) this.makeCastle(move);
 		else this.makeStandartMove(move);
@@ -96,6 +102,8 @@ export class ChessEngine {
 			? this.blackKing 
 			: this.whiteKing;
 		this.trackCheck(king);
+
+		this.turn = this.turn === "white" ? "black" : "white";
 	}
 
 	makePromotion = (figureName: string) => {
@@ -248,6 +256,9 @@ export class ChessEngine {
 					this.gameMode
 				) || new Set<string>()
 			};
+
+			if (king.color === "white")	(this.whiteKing as King).wasCheck();
+			else (this.blackKing as King).wasCheck();
 
 			if (this.isCheckmate()) {
 				//

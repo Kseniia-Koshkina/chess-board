@@ -9,7 +9,11 @@ import {
 	checkForLineAttacks, 
 	checkForPawnAttack 
 } from "../utils/checkForAttack";
-import { canKnighProtectKing, canPawnProtectKing, canRookOrQueenProtectKing } from "../utils/checkForProtection";
+import { 
+	canKnighProtectKing, 
+	canPawnProtectKing, 
+	canRookOrQueenProtectKing 
+} from "../utils/checkForProtection";
 
 export const isKingSafeAtPosition = (
 	gameMode: "white" | "black",
