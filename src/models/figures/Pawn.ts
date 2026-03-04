@@ -23,6 +23,11 @@ export class Pawn extends BaseFigure {
 	}
 
 	getPossibleMoves(gameMode: "white" | "black", board: Cell[]) {
+		if (this.getPinnedLine(gameMode, board)) return {
+			possibleMoves: new Set<string>(),
+			possibleAttackMoves: new Set<string>()
+		};
+
 		const pawnAttackDirections = gameMode === this.color
 			? yourPawnAttackDirections
 			: opponentPawnAttackDirections;

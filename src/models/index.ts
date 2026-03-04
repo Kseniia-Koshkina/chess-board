@@ -1,3 +1,4 @@
+import { getPinnedAttackDirections } from "../logic/figureLogic";
 import {
 	convertFromBoardIndex,
 	convertToBoardIndex,
@@ -18,6 +19,7 @@ export interface Figure {
 		possibleMoves: Set<string>,
 		possibleAttackMoves: Set<string>
 	},
+	getPinnedLine(gameMode: "black" | "white", board: Cell[]): void,
 	changePosition(x: xAxis, y: yAxis): void,
 	moveWasMade(): void
 }
@@ -62,7 +64,15 @@ export abstract class BaseFigure implements Figure {
 		const possibleMoves = new Set<string>();
 		const possibleAttackMoves = new Set<string>();
 
-		this.moveDirections.map(d => {
+		const pinnedAttackLine = this.getPinnedLine(gameMode, board);
+
+		const moveDirections = pinnedAttackLine 
+			? this.moveDirections.filter(d => 
+				pinnedAttackLine.some(pinnedDir => pinnedDir.dx === d.dx && pinnedDir.dy === d.dy)
+			)
+			: this.moveDirections;
+
+		moveDirections.map(d => {
 			let i = 1;
 			while (true) {
 				const index = getListIndexByCoordinates(x + d.dx * i, y + d.dy * i);
@@ -83,6 +93,18 @@ export abstract class BaseFigure implements Figure {
 			possibleMoves,
 			possibleAttackMoves
 		};
+	}
+
+	getPinnedLine(
+		gameMode: "black" | "white", 
+		board: Cell[]) {
+		const { x, y } = convertFromBoardIndex(this.position, gameMode);
+		return getPinnedAttackDirections(
+			x,
+			y,
+			this.color,
+			board
+		);
 	}
 }
 

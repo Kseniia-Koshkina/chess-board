@@ -17,6 +17,11 @@ export class Knight extends BaseFigure {
 	}
 
 	getPossibleMoves(gameMode: "white" | "black", board: Cell[]) {
+		if (this.getPinnedLine(gameMode, board)) return {
+			possibleMoves: new Set<string>(),
+			possibleAttackMoves: new Set<string>()
+		};
+
 		const { x, y } = convertFromBoardIndex(this.position, gameMode);
 		const possibleMoves = new Set<string>();
 		const possibleAttackMoves = new Set<string>();
