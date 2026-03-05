@@ -10,6 +10,7 @@ export type yAxis = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8'
 
 export interface Figure {
 	name: string,
+	notation: string,
 	x: xAxis,
 	y: yAxis,
 	position: string,
@@ -26,6 +27,7 @@ export interface Figure {
 
 export abstract class BaseFigure implements Figure {
 	name: string;
+	notation: string;
 	x: xAxis;
 	y: yAxis;
 	position: string;
@@ -35,12 +37,14 @@ export abstract class BaseFigure implements Figure {
 
 	constructor(
 		name: string,
+		notation: string,
 		x: xAxis,
 		y: yAxis,
 		color: "black" | "white",
 		moveDirection: Direction[]
 	) {
 		this.name = name;
+		this.notation = notation;
 		this.x = x;
 		this.y = y;
 		this.color = color;

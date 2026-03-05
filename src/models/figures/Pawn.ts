@@ -19,7 +19,7 @@ import {
 
 export class Pawn extends BaseFigure {
 	constructor(x: xAxis, y: yAxis, color: "black" | "white") {
-		super("pawn", x, y, color, []);
+		super("pawn", "", x, y, color, []);
 	}
 
 	getPossibleMoves(gameMode: "white" | "black", board: Cell[]) {

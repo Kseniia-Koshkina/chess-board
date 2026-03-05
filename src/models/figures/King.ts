@@ -15,7 +15,7 @@ import {
 
 export class King extends BaseFigure {
 	constructor(x: xAxis, y: yAxis, color: "black" | "white") {
-		super("king", x, y, color, lineAndDiagonalDirections)
+		super("king", "K", x, y, color, lineAndDiagonalDirections)
 	}
 	private wasUnderAttack = false;
 

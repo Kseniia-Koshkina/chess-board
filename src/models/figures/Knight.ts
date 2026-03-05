@@ -13,7 +13,7 @@ import {
 
 export class Knight extends BaseFigure {
 	constructor(x: xAxis, y: yAxis, color: "black" | "white") {
-		super("knight", x, y, color, knightDirections)
+		super("knight", "N", x, y, color, knightDirections)
 	}
 
 	getPossibleMoves(gameMode: "white" | "black", board: Cell[]) {

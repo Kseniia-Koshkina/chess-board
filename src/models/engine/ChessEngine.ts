@@ -30,6 +30,18 @@ export class ChessEngine {
 	private check: Check | null = null;
 	private promotion: Promotion | null = null;
 
+	/* 
+		Standard Algebraic Notation 
+		used for human readable move history and to save move history PGN
+	*/
+	private moveHistorySAN: string[] = [];
+
+	/* 
+		Universal Chess Interface
+		used for ui to communicate with chess engine
+	*/
+	private moveHistoryUCI: string[] = [];
+
 	constructor(gameMode: 'white' | 'black') {
 		const kings = getInitKingPositions();
 		this.board = initBoard(gameMode);
@@ -159,6 +171,9 @@ export class ChessEngine {
 
 		this.board[cellIndexTo].figure = move.figure;
 		this.board[cellIndexFrom].figure = undefined;
+
+		this.moveHistorySAN.push(`${move.figure.notation}${move.from}${move.to}`);
+		this.moveHistoryUCI.push(`${move.from}${move.to}`);
 	}
 
 	private isCastle = (move: Move): boolean => {
