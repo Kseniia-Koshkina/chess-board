@@ -1,17 +1,21 @@
-import { Board } from "../features/chess";
 import { useAuth } from "../features/auth";
+import { Button } from "../components/Button";
+import { Box } from "../components/Box";
+import { Card } from "../components/Card";
 
 const MainScreen = () => {
-	const { token, logout } = useAuth();
+	const { logout } = useAuth();
 
 	return (	
 		<>
-			{token?.access_token}
-			<button>Online game</button>
-			<button>Play with computer</button>
-			<button onClick={() => logout()}>Logout</button>
-
-			<Board />
+			<Box flexDirection="row">
+				<Card gap={2} padding={4}>
+					<Button>Online Game</Button>
+					<Button>Play Bots</Button>
+					<Button onClick={() => logout()}>Logout</Button>
+				</Card>
+				<img src="main-screen-image.png"/>
+			</Box>
 		</>
 	)
 }
