@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import AuthContext from "../context/authContext";
+import AuthContext from "../features/auth/context/authContext";
 
 const AuthScreen = () => {
 	const [username, setUsername] = useState<string>("");

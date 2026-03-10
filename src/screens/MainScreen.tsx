@@ -1,5 +1,5 @@
-import Board from "../features/chess/components/Board";
-import { useAuth } from "../hooks/AuthHook";
+import { Board } from "../features/chess";
+import { useAuth } from "../features/auth";
 
 const MainScreen = () => {
 	const { token, logout } = useAuth();

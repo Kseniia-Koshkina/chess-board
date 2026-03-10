@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { UserContextType } from "../models/auth/User";
+import { UserContextType } from "../types/user";
 
 const UserContext = createContext<UserContextType>({
 	setUser: () => {},

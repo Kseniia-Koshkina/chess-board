@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { AuthContextType } from "../models/auth/Auth";
+import { AuthContextType } from "../types/auth";
 
 const AuthContext = createContext<AuthContextType>({
 	login: () => {},

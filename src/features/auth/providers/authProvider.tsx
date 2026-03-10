@@ -1,6 +1,6 @@
 import { useState } from "react";
 import AuthContext from "../context/authContext";
-import { Token } from "../models/auth/Auth";
+import { Token } from "../types/auth";
 
 const api = import.meta.env.VITE_API_BASE_URL;
 

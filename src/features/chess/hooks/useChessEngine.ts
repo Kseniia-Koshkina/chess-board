@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ChessEngine } from "../engine/ChessEngine";
+import { ChessEngine } from "../engine/chessEngine";
 import { Cell, Figure } from "../types";
 
 const useChessEngine = (gameMode: "white" | "black") => {
