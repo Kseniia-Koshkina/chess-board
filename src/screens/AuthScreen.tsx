@@ -13,12 +13,12 @@ const AuthScreen = () => {
 	return (
 		<Box center>
 			<Card 
-				flexDirection="column" 
+				flexDirection={"column"}
 				gap={2} 
 				padding={2} 
 				width={"30%"}
 			> 
-				<img src={"chess-logo.png"}></img>
+				<img src={"/chess-logo.png"} />
 				<Input 
 					type="text" 
 					onInput={e => setUsername(e.currentTarget.value)} 

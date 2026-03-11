@@ -2,7 +2,10 @@ import { useMemo, useState } from "react";
 import { ChessEngine } from "../engine/chessEngine";
 import { Cell, Figure } from "../types";
 
-const useChessEngine = (gameMode: "white" | "black") => {
+const useChessEngine = (
+	gameMode: "white" | "black", 
+	sendMove: (move:string) => void
+) => {
 	const engine = useMemo(() => new ChessEngine(gameMode), [gameMode]);
 	const defaultSet = new Set<string>;
 
@@ -71,6 +74,7 @@ const useChessEngine = (gameMode: "white" | "black") => {
 		engine.makeMove(move);
 		setBoard(engine.getBoard());
 		cleanSelectedFigure();
+		sendMove(`${move.from}-${move.to}`)
 	}
 
 	const makePromotion = (figureName: string) => {

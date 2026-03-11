@@ -1,6 +1,12 @@
 import styled from 'styled-components';
 
-export const Box = styled.div<{
+export const Box = styled.div.withConfig({
+	shouldForwardProp: prop => ![
+		'flexDirection',
+		'center',
+		'maxWidth'
+	].includes(prop)
+})<{
   width?: string;
   maxWidth?: string;
   padding?: number;

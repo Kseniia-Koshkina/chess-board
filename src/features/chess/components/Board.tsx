@@ -4,7 +4,9 @@ import BoardCell from "./BoardCell";
 
 const gameMode = "white"; // TODO: make it dynamic based on user choice
 
-const Board = () => {
+const Board = (
+	{sendMove}: {sendMove: (move: string) => void}
+) => {
 	const {
 		board,
 		possibleMoves,
@@ -12,7 +14,7 @@ const Board = () => {
 		isPromotion,
 		handleInteraction,
 		makePromotion
-	} = useChessEngine(gameMode);
+	} = useChessEngine(gameMode, sendMove);
 
 	return (
 		<>

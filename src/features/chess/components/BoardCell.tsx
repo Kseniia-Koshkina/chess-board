@@ -30,7 +30,7 @@ const BoardCell = ({
 		>
 			{cell.position}
 			{cell.figure
-				? <img src={ "figures/" + cell.figure.color + cell.figure.name + ".png" } />
+				? <img src={`/figures/${cell.figure.color}${cell.figure.name}.png`} />
 				: <></>
 			}
 		</div>
