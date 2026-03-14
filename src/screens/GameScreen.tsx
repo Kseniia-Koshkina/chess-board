@@ -3,9 +3,12 @@ import { Box } from "../components";
 import { Board } from "../features/chess";
 import { useGameSocket } from "../features/socket/hooks/useGameSocket";
 
-
 const GameScreen = () => {
-	const {connect, sendMove, opponentMove} = useGameSocket();
+	const {
+		connect, 
+		sendMove, 
+		opponentMove
+	} = useGameSocket();
 
 	useEffect(() => {
 		connect("5");
@@ -14,7 +17,7 @@ const GameScreen = () => {
 	return (
 		<>
 		<Box center>
-			<Board sendMove={sendMove}/>
+			<Board sendMove={sendMove} />
 		</Box>
 		<h1> {opponentMove} </h1>
 		</>

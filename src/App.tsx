@@ -1,18 +1,43 @@
 import MainScreen from "./screens/MainScreen";
 import AuthScreen from "./screens/AuthScreen";
-import { useAuth } from "./features/auth";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import GameScreen from "./screens/GameScreen";
+import { useAuth } from "./features/auth";
+import { 
+	createBrowserRouter, 
+	redirect, 
+	RouterProvider 
+} from "react-router";
 
 const App = () => {
-	const { token } = useAuth();	
+	const { token, getToken } = useAuth();
+
+	const authLoader = async () => {
+		if (token) return;
+
+		const localToken = await getToken();
+
+		if (!localToken)
+			return redirect("/login");
+
+		return null;
+	};
+
 	const router = createBrowserRouter([
-		{ path: "/", Component: MainScreen },
-		{ path: "/online/game/:gameId", Component: GameScreen }
+		{ 
+			path: "/", 
+			loader: authLoader, 
+			Component: MainScreen
+		},
+		{	
+			path: "/login",	
+			Component: AuthScreen
+		},
+		{ 
+			path: "/online/game/:gameId", 
+			Component: GameScreen 
+		}
 	]);
 
-	//change auth logic 
-	if (!token) return <AuthScreen /> 
 	return <RouterProvider router={router} />
 }
 

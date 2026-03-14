@@ -1,17 +1,9 @@
 export interface AuthContextType {
-	token?: Token;
-	login: (
-		username: string,
-		password: string
-	) => void;
-	register: (
-		username: string,
-		password: string
-	) => void;
-	logout: () => void;
+	token: Token | null;
+	setToken: React.Dispatch<React.SetStateAction<Token | null>>;
 }
 
 export interface Token {
-	access_token: string;
-	// expires_at: string;
+	accessToken: string | null;
+	//expiresIn: string;
 }
