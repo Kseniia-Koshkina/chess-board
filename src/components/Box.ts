@@ -8,16 +8,17 @@ export const Box = styled.div.withConfig({
 	].includes(prop)
 })<{
   width?: string;
+	height?: string;
   maxWidth?: string;
   padding?: number;
   margin?: number;
   display?: string;
-  flexDirection?: 'row' | 'column';
+  flexDirection?: 'row' | 'column' | 'row-reverse';
   gap?: number;
   center?: boolean;
 }>`
   width: ${props => props.width || '100%'};
-  max-width: ${props => props.maxWidth || '100%'};
+	height: ${props => props.height || '100%'};
   padding: ${props => `${(props.padding || 0) * 8}px`};
   margin: ${props => `${(props.margin || 0) * 8}`};
   display: ${props => props.display || 'flex'};

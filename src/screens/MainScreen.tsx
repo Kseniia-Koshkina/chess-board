@@ -1,35 +1,129 @@
-import { Box, Button, Card } from "../components";
+import { useTheme } from "../theme/themeContext";
+import { Box, Button, Card, Container } from "../components";
 import { useAuth } from "../features/auth";
 
 const MainScreen = () => {
+	const { toggleTheme } = useTheme();
 	const { logout } = useAuth();
 
-	return (	
-		<>
-			<Box flexDirection="row">
-				<Card 
-					gap={2} 
-					padding={4} 
-					width="30%"
-				>
-					<Button>Online Game</Button>
-					<Button>Play Bots</Button>
-					<Button onClick={() => logout()}>
-						Logout
+	const Navigation = () => 
+		<Card
+			height="80px"
+			bgOpacity="40"
+			padding={2}
+			style={{
+				borderRadius: "20px 20px 0px 0px"
+			}}
+		>
+			<Box flexDirection="row" style={{ justifyContent: "space-between" }}>
+				<Box style={{alignItems: "start"}} flexDirection="row">
+					<img height="50px" src="logo.svg" />
+					<img height="60px" src="chess-naming.png" />
+				</Box>
+				<Box flexDirection="row-reverse" gap={1}>
+					<Button 
+						bgOpacity="90"
+						style={{
+							height: "50px", 
+							width: "100px"
+							}} 
+						onClick={() => logout()}
+					>
+						LogOut
 					</Button>
-				</Card>
-					<img
-						src="main-screen-image.png"
-						height={1000}
-						width={"auto"}
-						style={{ 
-							objectFit: "cover", 
-							display: "block" 
-						}}
-						alt="Main screen image"
-					/>
+					<Button 
+						bgOpacity="90"
+						style={{
+							height: "50px", 
+							width: "50px", 
+							borderRadius: "30px", 
+							padding: "0"
+						}} 
+						onClick={() => toggleTheme()}
+					>
+						<img src="moon.svg" height="25px" />
+					</Button>
+				</Box>
 			</Box>
-		</>
+		</Card>
+
+	const MenuButton = (
+		{ icon, title, description}:
+		{
+			icon: string;
+			title: string;
+			description: string
+		}
+	) =>
+		<Button 
+			padding={6} 
+			bgOpacity="80"
+		>
+			<Box 
+				flexDirection="row" 
+				gap={3} 
+				style={{ 
+					textAlign: "left", 
+					margin: "auto" 
+				}}>
+				<Box width="20%">
+					<img src={icon} style={{ height: "50px", width: "50px"}} />
+				</Box>
+				<Box gap={0.5}>
+					<p style={{
+						fontSize: "25px", 
+						margin: 0, 
+						fontWeight: "600"
+					}}>
+						{title}
+					</p>
+					<p style={{ margin: 0 }}>
+						{description}
+					</p>
+				</Box>
+			</Box>
+		</Button>
+
+	return (	
+		<Container padding={3} >
+			<Card>
+				<Navigation />
+
+				<Box padding={4}>
+					<Box flexDirection="row" >
+						<Card
+							gap={2} 
+							padding={4} 
+							width="30%"
+							bgOpacity="40"
+						>
+							<MenuButton 
+								icon="online-icon.svg" 
+								title="PLAY ONLINE" 
+								description="Find a real opponent" 
+							/>
+							<MenuButton 
+								icon="bot-icon.svg" 
+								title="PLAY vs BOT" 
+								description="Choose AI difficulty" 
+							/>
+						</Card>
+
+						<Box width="70%">
+							<img
+								src="main-screen-image.png"
+								alt="Main screen"
+								style={{
+									width: '100%',
+									height: '100%',
+									display: 'block'
+								}}
+							/>
+						</Box>
+					</Box>
+				</Box>
+			</Card>
+		</Container>
 	)
 }
 

@@ -8,18 +8,23 @@ interface ButtonProps {
   borderRadius?: string;
   bgColor?: string;
   fgColor?: string;
+	bgOpacity?: string;
 }
 
-export const Button = styled.button<ButtonProps>`
+export const Button = styled.button.withConfig({
+	shouldForwardProp: prop => ![
+		'bgOpacity'
+	].includes(prop)
+})<ButtonProps>`
   width: ${props => props.width || "auto"};
   padding: ${props =>
     typeof props.padding === "number"
       ? `${props.padding * SPACING_UNIT}px`
       : props.padding || "8px 16px"};
-  border-radius: ${props => props.borderRadius || "6px"};
+  border-radius: ${props => props.borderRadius || "20px"};
   border: none;
 
-  background-color: ${props => props.bgColor || props.theme.primary};
+  background-color: ${props => (props.bgColor || props.theme.primary) + (props.bgOpacity || "")};
   color: ${props => props.fgColor || props.theme.bg};
 
   font-size: 1rem;
@@ -27,11 +32,6 @@ export const Button = styled.button<ButtonProps>`
   cursor: pointer;
 
   transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
-
-  &:hover {
-    filter: brightness(0.9);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  }
 
   &:active {
     transform: scale(0.98);
