@@ -22,20 +22,23 @@ export const GlobalStyles = createGlobalStyle`
     padding: 0;
     background: ${({ theme }) => theme.background};
     font-family: sans-serif;
+		color: white;
   }
 `
+
+const primaryColor = '#0170DB';
 
 export const themes = {
 	light: {
 		background: '#ffffff',
 		bg: '#ffffff',
-		primary: '#0170DB',
+		primary: primaryColor,
 		mainOpacity: '10'
 	} as Theme,
 	dark: {
 		background: '#1e1e1e',
 		bg: '#ffffff',
-		primary: '#0170DB',
+		primary: primaryColor,
 		mainOpacity: '10'
 	} as Theme
 }

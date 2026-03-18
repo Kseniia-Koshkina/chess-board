@@ -19,6 +19,24 @@ export const loginRequest = async (
 	);
 }
 
+export const registerRequest = async (
+	username: string,
+	password: string
+) => {
+	return await apiFetch("/auth/register", 
+		{
+			method: "POST",
+			credentials: "include",
+			body: JSON.stringify(
+				{
+					username: username,
+					password: password
+				}
+			)
+		}
+	)
+}
+
 interface TokenResponse {
 	access_token: string;
 }

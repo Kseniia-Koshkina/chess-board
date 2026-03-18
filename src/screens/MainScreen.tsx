@@ -3,8 +3,9 @@ import { Box, Button, Card, Container } from "../components";
 import { useAuth } from "../features/auth";
 
 const MainScreen = () => {
-	const { toggleTheme } = useTheme();
+	const { theme, toggleTheme } = useTheme();
 	const { logout } = useAuth();
+	console.log(theme)
 
 	const Navigation = () => 
 		<Card
@@ -15,18 +16,34 @@ const MainScreen = () => {
 				borderRadius: "20px 20px 0px 0px"
 			}}
 		>
-			<Box flexDirection="row" style={{ justifyContent: "space-between" }}>
-				<Box style={{alignItems: "start"}} flexDirection="row">
-					<img height="50px" src="logo.svg" />
-					<img height="60px" src="chess-naming.png" />
+			<Box 
+				flexDirection="row" 
+				style={{ justifyContent: "space-between" }}
+			>
+				<Box 
+					flexDirection="row"
+					style={{ alignItems: "start" }} 
+					gap={3}
+				>
+					<img 
+						height="50px" 
+						src={`logo-${theme}.svg`} 
+					/>
+					<img 
+						height="60px" 
+						src={`chess-naming-long-${theme}.png`} 
+					/>
 				</Box>
-				<Box flexDirection="row-reverse" gap={1}>
+				<Box 
+					flexDirection="row-reverse" 
+					gap={1}
+				>
 					<Button 
 						bgOpacity="90"
 						style={{
 							height: "50px", 
 							width: "100px"
-							}} 
+						}} 
 						onClick={() => logout()}
 					>
 						LogOut

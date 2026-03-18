@@ -4,6 +4,7 @@ const SPACING_UNIT = 4;
 
 interface ButtonProps {
   width?: string;
+	height?: string;
   padding?: number | string;
   borderRadius?: string;
   bgColor?: string;
@@ -16,7 +17,8 @@ export const Button = styled.button.withConfig({
 		'bgOpacity'
 	].includes(prop)
 })<ButtonProps>`
-  width: ${props => props.width || "auto"};
+  width: ${props => props.width || "100%"};
+	height: ${props => props.height || "auto"};
   padding: ${props =>
     typeof props.padding === "number"
       ? `${props.padding * SPACING_UNIT}px`

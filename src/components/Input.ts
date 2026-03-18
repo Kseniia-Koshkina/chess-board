@@ -11,8 +11,9 @@ interface InputProps {
 
 export const Input = styled.input<InputProps>`
   width: ${props => props.width || '100%'};
+	height: 50px;
   padding: ${props => props.padding || '8px 12px'};
-  border-radius: ${props => props.borderRadius || '5px'};
+  border-radius: ${props => props.borderRadius || '15px'};
   border: 1px solid ${props => props.borderColor || props.theme.fg};
   background-color: ${props => props.bgColor || props.theme.bg};
   color: ${props => props.fgColor || props.theme.fg};

@@ -1,6 +1,7 @@
 import { 
 	loginRequest, 
 	logoutRequest, 
+	registerRequest, 
 	tokenRequest 
 } from "../../../api/authApi";
 import useAuthStore from "./useAuthStore";
@@ -12,21 +13,39 @@ export const useAuth = () => {
 		username: string,
 		password: string
 	) => {
-		const response = await loginRequest(username, password);
+		try {
+			const response = await loginRequest(username, password);
 
-		if (response.ok) {
-			await getToken();
-			return true;
+			if (response.ok) {
+				await getToken();
+				return true;
+			}
+		} catch {
+			return false;
 		}
+	}
 
-		return false;
+	const register = async (
+		username: string,
+		password: string
+	) => {
+		try {
+			const response = await registerRequest(username, password);
+
+			if (response.ok) {
+				await getToken();
+				return true;
+			}
+		} catch {
+			return false;
+		}
 	}
 
 	const getToken = async () => {
 		const response = await tokenRequest();
 
 		if (response.ok) 
-			setToken(()=>response.data);
+			setToken(() => response.data);
 
 		return response.data;
 	}
@@ -37,5 +56,5 @@ export const useAuth = () => {
 			setToken(null);
 	}
 
-	return { token, login, getToken, logout }
+	return { token, login, register, getToken, logout }
 }

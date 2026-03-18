@@ -14,7 +14,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 	}
 
 	return (
-		<ThemeContext.Provider value={{ toggleTheme }}>
+		<ThemeContext.Provider value={{ theme: currentTheme, toggleTheme }}>
 			<StyledThemeProvider theme={ themes[currentTheme] }>
 				<GlobalStyles />
 				{children}
