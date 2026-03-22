@@ -3,7 +3,7 @@ import { GameSocketContextType } from "../types/socket";
 
 const GameSocketContext = createContext<GameSocketContextType>({
 	connect: () => {},
-	sendMove: () => {}
+	sendMove: (move: string) => {}
 });
 
 export default GameSocketContext;

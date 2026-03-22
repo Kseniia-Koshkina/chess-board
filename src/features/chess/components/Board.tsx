@@ -2,10 +2,14 @@ import useChessEngine from "../hooks/useChessEngine";
 import { Cell } from "../types";
 import BoardCell from "./BoardCell";
 
-const gameMode = "white"; // TODO: make it dynamic based on user choice
-
 const Board = (
-	{sendMove}: {sendMove: (move: string) => void}
+	{
+		sendMove,
+		gameMode
+	}: {
+		sendMove: (move: string) => void
+		gameMode: "white" | "black"
+	}
 ) => {
 	const {
 		board,

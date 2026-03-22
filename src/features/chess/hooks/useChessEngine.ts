@@ -4,7 +4,7 @@ import { Cell, Figure } from "../types";
 
 const useChessEngine = (
 	gameMode: "white" | "black", 
-	sendMove: (move:string) => void
+	sendMove: (move: string) => void
 ) => {
 	const engine = useMemo(() => new ChessEngine(gameMode), [gameMode]);
 	const defaultSet = new Set<string>;

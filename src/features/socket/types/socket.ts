@@ -1,5 +1,8 @@
+import { Game } from "./game";
+
 export interface GameSocketContextType {
-	connect: (gameId: string) => void;
+	connect: () => void;
 	sendMove: (move: string) => void;
 	opponentMove?: string;
+	game?: Game;
 }

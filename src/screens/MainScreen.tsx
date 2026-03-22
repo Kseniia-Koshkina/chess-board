@@ -1,11 +1,20 @@
 import { useTheme } from "../theme/themeContext";
 import { Box, Button, Card, Container } from "../components";
 import { useAuth } from "../features/auth";
+import { useGameSocket } from "../features/socket/hooks/useGameSocket";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const MainScreen = () => {
 	const { theme, toggleTheme } = useTheme();
 	const { logout } = useAuth();
-	console.log(theme)
+	const {	connect, game } = useGameSocket();
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (game?.gameId)
+			navigate(`/online/game/${game.gameId}`);
+	}, [game?.gameId]);
 
 	const Navigation = () => 
 		<Card
@@ -65,16 +74,18 @@ const MainScreen = () => {
 		</Card>
 
 	const MenuButton = (
-		{ icon, title, description}:
+		{ icon, title, description, onClick}:
 		{
 			icon: string;
 			title: string;
-			description: string
+			description: string;
+			onClick?: () => void;
 		}
 	) =>
 		<Button 
 			padding={6} 
 			bgOpacity="80"
+			onClick={onClick}
 		>
 			<Box 
 				flexDirection="row" 
@@ -118,6 +129,8 @@ const MainScreen = () => {
 								icon="online-icon.svg" 
 								title="PLAY ONLINE" 
 								description="Find a real opponent" 
+
+								onClick={() => connect()}
 							/>
 							<MenuButton 
 								icon="bot-icon.svg" 
