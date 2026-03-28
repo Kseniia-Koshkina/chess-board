@@ -4,3 +4,4 @@ export * from "./Card";
 export * from "./Input";
 export * from "./Container";
 export * from "./TextButton";
+export * from "./LoadingText";

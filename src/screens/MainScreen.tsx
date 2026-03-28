@@ -1,5 +1,5 @@
 import { useTheme } from "../theme/themeContext";
-import { Box, Button, Card, Container } from "../components";
+import { Box, Button, Card, Container, LoadingText } from "../components";
 import { useAuth } from "../features/auth";
 import { useGameSocket } from "../features/socket/hooks/useGameSocket";
 import { useNavigate } from "react-router-dom";
@@ -8,13 +8,18 @@ import { useEffect } from "react";
 const MainScreen = () => {
 	const { theme, toggleTheme } = useTheme();
 	const { logout } = useAuth();
-	const {	connect, game } = useGameSocket();
+	const {	
+		connect,
+		disconnect, 
+		game, 
+		connectionStatus 
+	} = useGameSocket();
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (game?.gameId)
 			navigate(`/online/game/${game.gameId}`);
-	}, [game?.gameId]);
+	}, [game?.gameId, navigate]);
 
 	const Navigation = () => 
 		<Card
@@ -112,47 +117,74 @@ const MainScreen = () => {
 			</Box>
 		</Button>
 
-	return (	
-		<Container padding={3} >
-			<Card>
-				<Navigation />
+	const Menu = () => 
+		<Card>
+			<Navigation />
+			<Box padding={4}>
+				<Box flexDirection="row" >
+					<Card
+						gap={2} 
+						padding={4} 
+						width="30%"
+						bgOpacity="40"
+					>
+						<MenuButton 
+							icon="online-icon.svg" 
+							title="PLAY ONLINE" 
+							description="Find a real opponent" 
 
-				<Box padding={4}>
-					<Box flexDirection="row" >
-						<Card
-							gap={2} 
-							padding={4} 
-							width="30%"
-							bgOpacity="40"
-						>
-							<MenuButton 
-								icon="online-icon.svg" 
-								title="PLAY ONLINE" 
-								description="Find a real opponent" 
+							onClick={() => connect()}
+						/>
+						<MenuButton 
+							icon="bot-icon.svg" 
+							title="PLAY vs BOT" 
+							description="Choose AI difficulty" 
+						/>
+					</Card>
 
-								onClick={() => connect()}
-							/>
-							<MenuButton 
-								icon="bot-icon.svg" 
-								title="PLAY vs BOT" 
-								description="Choose AI difficulty" 
-							/>
-						</Card>
-
-						<Box width="70%">
-							<img
-								src="main-screen-image.png"
-								alt="Main screen"
-								style={{
-									width: '100%',
-									height: '100%',
-									display: 'block'
-								}}
-							/>
-						</Box>
+					<Box width="70%">
+						<img
+							src="main-screen-image.png"
+							alt="Main screen"
+							style={{
+								width: '100%',
+								height: '100%',
+								display: 'block'
+							}}
+						/>
 					</Box>
 				</Box>
-			</Card>
+			</Box>
+		</Card>
+
+	const WaitingPanel = () => 
+		<Card
+				gap={5} 
+				padding={2} 
+				height="600px"
+				maxWidth="400px"
+				width="100%"
+				bgOpacity="40"
+			>
+				<Box center>
+					<LoadingText >
+						Searching for an opponent
+					</LoadingText>
+					<Button 
+						onClick={() => disconnect()} 
+						style={{ marginTop: "20px" }}
+					>
+						Cancel
+					</Button>
+				</Box>
+		</Card>
+
+	return (	
+		<Container padding={3} >
+			{connectionStatus == "waiting" 
+				? <WaitingPanel />
+				: <Menu />
+			}
 		</Container>
 	)
 }

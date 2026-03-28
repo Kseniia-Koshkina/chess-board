@@ -1,6 +1,6 @@
 import { useState } from "react";
 import GameSocketContext from "../context/gameSocketContext"
-import { Game } from "../types/game";
+import { ConnectionsStatus, Game } from "../types/game";
 import { GameStartMessage, messageMapper, MoveMessage } from "../types/massage";
 
 const ws = import.meta.env.VITE_WS_BASE_URL;
@@ -9,8 +9,9 @@ const GameSocketProvider = (
 	{ children }: { children: React.ReactNode }
 ) => {
 	const [game, setGame] = useState<Game>();
-	const [gameSocket, setGameSocket] = useState<WebSocket>();
+	const [gameSocket, setGameSocket] = useState<WebSocket | null>();
 	const [opponentMove, setOpponentMove] = useState<string>("");
+	const [connectionStatus, setConnectionsStatus] = useState<ConnectionsStatus>("not connected");
 
 	const connect = () => {
 		if (gameSocket) return;
@@ -19,6 +20,7 @@ const GameSocketProvider = (
 
 		socket.addEventListener("open", () => {
 			console.log("logging: connected to the game server");
+			setConnectionsStatus("waiting");
 		});
 
 		socket.addEventListener("message", (event) => {
@@ -29,16 +31,26 @@ const GameSocketProvider = (
 			switch (type) {
 				case "game_start":
 					startGame(message)
+					setConnectionsStatus("connected");
 					break;
 				case "move": 
 					receiveMove(message)
 					break;
 				case "waiting": 
+					setConnectionsStatus("waiting");
 					break;
 			}
 		});
 
 		setGameSocket(socket);
+	}
+
+	const disconnect = () => {
+		if (gameSocket) {
+			gameSocket.close();
+			setGameSocket(null);
+			setConnectionsStatus("not connected");
+		}
 	}
 
 	const startGame = (message: GameStartMessage) => {
@@ -73,9 +85,11 @@ const GameSocketProvider = (
 		<GameSocketContext.Provider 
 			value={{ 
 				connect, 
+				disconnect,
 				sendMove,
 				opponentMove,
-				game
+				game,
+				connectionStatus
 			}}
 		>
 			{children}
